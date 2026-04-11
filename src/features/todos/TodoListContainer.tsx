@@ -4,7 +4,12 @@ import { useTodoFilters } from "./hooks/useTodoFilters";
 import { useFilteredTodos } from "./hooks/useFilteredTodos";
 import TodoFilters from "./components/TodoFilters";
 import TodoTable from "./components/TodoTable";
+import TodoPagination from "./components/TodoPagination";
 
+/**
+ * Container component: orchestrates data fetching, filtering, and pagination.
+ * Delegates rendering to presentational components.
+ */
 const TodoListContainer = () => {
   const { todos, isLoading: todosLoading, isError: todosError } = useTodos();
   const { users, userMap, isLoading: usersLoading, isError: usersError } = useUsers();
@@ -31,6 +36,13 @@ const TodoListContainer = () => {
       <h1 className="text-2xl font-bold text-foreground">Todo List</h1>
       <TodoFilters filters={filters} users={users} onFilterChange={setFilters} />
       <TodoTable todos={paginated} userMap={userMap} />
+      <TodoPagination
+        page={page}
+        totalPages={totalPages}
+        totalItems={filtered.length}
+        pageSize={pageSize}
+        onPageChange={(p) => setFilters({ page: p })}
+      />
     </div>
   );
 };
