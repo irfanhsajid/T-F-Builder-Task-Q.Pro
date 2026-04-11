@@ -1,9 +1,13 @@
 import { Loader2 } from "lucide-react";
-import { useTodos } from "./hooks/useTodos";
+import { useTodos, useUsers } from "./hooks/useTodos";
 import TodoTable from "./components/TodoTable";
 
 const TodoListContainer = () => {
-  const { todos, isLoading, isError } = useTodos();
+  const { todos, isLoading: todosLoading, isError: todosError } = useTodos();
+  const { userMap, isLoading: usersLoading, isError: usersError } = useUsers();
+
+  const isLoading = todosLoading || usersLoading;
+  const isError = todosError || usersError;
 
   if (isLoading) {
     return (
@@ -16,8 +20,6 @@ const TodoListContainer = () => {
   if (isError) {
     return <div className="py-16 text-center text-destructive">Failed to load data. Please try again.</div>;
   }
-
-  const userMap = new Map<number, string>();
 
   return (
     <div className="animate-fade-in space-y-6">
