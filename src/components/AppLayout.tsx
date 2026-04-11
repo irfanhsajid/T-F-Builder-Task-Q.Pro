@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { CheckSquare, PenTool, Eye } from "lucide-react";
+import layout from "@/styles/Layout.module.css";
 
 const navItems = [
   { to: "/todos", label: "Todos", icon: CheckSquare },
@@ -9,23 +10,17 @@ const navItems = [
 
 const AppLayout = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
-        <div className="container mx-auto flex items-center justify-between px-6 py-3">
-          <span className="text-lg font-bold text-foreground tracking-tight">
-            Q Pro - Assessment
-          </span>
-          <div className="flex items-center gap-1">
+    <div className={layout.shell}>
+      <nav className={layout.nav}>
+        <div className={layout.navInner}>
+          <span className={layout.brand}>Q Pro - Assessment</span>
+          <div className={layout.navLinks}>
             {navItems.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
-                  }`
+                  isActive ? `${layout.navLink} ${layout.navLinkActive}` : layout.navLink
                 }
               >
                 <Icon size={16} />
@@ -35,7 +30,7 @@ const AppLayout = () => {
           </div>
         </div>
       </nav>
-      <main className="container mx-auto px-6 py-8">
+      <main className={layout.main}>
         <Outlet />
       </main>
     </div>

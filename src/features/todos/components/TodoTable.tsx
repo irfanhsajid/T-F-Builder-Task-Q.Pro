@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/badge";
 import type { Todo } from "../types";
+import styles from "@/styles/Todo.module.css";
 
 interface TodoTableProps {
   todos: Todo[];
@@ -7,32 +7,31 @@ interface TodoTableProps {
 }
 
 const TodoTable = ({ todos, userMap }: TodoTableProps) => (
-  <div className="overflow-hidden rounded-xl border bg-card">
-    <table className="w-full text-sm">
+  <div className={styles.tableWrap}>
+    <table className={styles.table}>
       <thead>
-        <tr className="border-b bg-muted/50">
-          <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Title</th>
-          <th className="px-4 py-3 text-left font-semibold text-muted-foreground">User</th>
-          <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Status</th>
+        <tr>
+          <th>Title</th>
+          <th>User</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
         {todos.length === 0 ? (
           <tr>
-            <td colSpan={3} className="px-4 py-12 text-center text-muted-foreground">No todos found.</td>
+            <td colSpan={3} className={styles.emptyCell}>
+              No todos found.
+            </td>
           </tr>
         ) : (
           todos.map((todo) => (
-            <tr key={todo.id} className="border-b last:border-0 transition-colors hover:bg-muted/30">
-              <td className="px-4 py-3 text-foreground">{todo.title}</td>
-              <td className="px-4 py-3 text-muted-foreground">{userMap.get(todo.userId) ?? "Unknown"}</td>
-              <td className="px-4 py-3">
-                <Badge
-                  variant={todo.completed ? "default" : "secondary"}
-                  className={todo.completed ? "bg-success text-success-foreground" : ""}
-                >
+            <tr key={todo.id}>
+              <td>{todo.title}</td>
+              <td className={styles.muted}>{userMap.get(todo.userId) ?? "Unknown"}</td>
+              <td>
+                <span className={todo.completed ? styles.badgeSuccess : styles.badgeMuted}>
                   {todo.completed ? "Completed" : "Pending"}
-                </Badge>
+                </span>
               </td>
             </tr>
           ))

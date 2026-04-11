@@ -5,6 +5,7 @@ import { useFilteredTodos } from "./hooks/useFilteredTodos";
 import TodoFilters from "./components/TodoFilters";
 import TodoTable from "./components/TodoTable";
 import TodoPagination from "./components/TodoPagination";
+import styles from "@/styles/Todo.module.css";
 
 /**
  * Container component: orchestrates data fetching, filtering, and pagination.
@@ -21,19 +22,19 @@ const TodoListContainer = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-32">
-        <Loader2 className="animate-spin text-primary" size={32} />
+      <div className={styles.loading}>
+        <Loader2 className={styles.spinner} size={32} />
       </div>
     );
   }
 
   if (isError) {
-    return <div className="py-16 text-center text-destructive">Failed to load data. Please try again.</div>;
+    return <div className={styles.error}>Failed to load data. Please try again.</div>;
   }
 
   return (
-    <div className="animate-fade-in space-y-6">
-      <h1 className="text-2xl font-bold text-foreground">Todo List</h1>
+    <div className={styles.page}>
+      <h1 className={styles.title}>Todo List</h1>
       <TodoFilters filters={filters} users={users} onFilterChange={setFilters} />
       <TodoTable todos={paginated} userMap={userMap} />
       <TodoPagination

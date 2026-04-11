@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import styles from "@/styles/Todo.module.css";
 
 interface TodoPaginationProps {
   page: number;
@@ -10,18 +10,33 @@ interface TodoPaginationProps {
 }
 
 const TodoPagination = ({ page, totalPages, totalItems, pageSize, onPageChange }: TodoPaginationProps) => (
-  <div className="flex items-center justify-between">
-    <span className="text-sm text-muted-foreground">
-      Showing {totalItems === 0 ? 0 : (page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalItems)} of {totalItems}
+  <div className={styles.pagination}>
+    <span className={styles.paginationInfo}>
+      Showing {totalItems === 0 ? 0 : (page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalItems)} of{" "}
+      {totalItems}
     </span>
-    <div className="flex items-center gap-2">
-      <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+    <div className={styles.paginationControls}>
+      <button
+        type="button"
+        className={styles.iconButton}
+        disabled={page <= 1}
+        onClick={() => onPageChange(page - 1)}
+        aria-label="Previous page"
+      >
         <ChevronLeft size={16} />
-      </Button>
-      <span className="text-sm font-medium text-foreground">{page} / {totalPages}</span>
-      <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
+      </button>
+      <span className={styles.pageIndicator}>
+        {page} / {totalPages}
+      </span>
+      <button
+        type="button"
+        className={styles.iconButton}
+        disabled={page >= totalPages}
+        onClick={() => onPageChange(page + 1)}
+        aria-label="Next page"
+      >
         <ChevronRight size={16} />
-      </Button>
+      </button>
     </div>
   </div>
 );

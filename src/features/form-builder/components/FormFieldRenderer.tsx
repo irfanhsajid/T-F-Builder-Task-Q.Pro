@@ -1,10 +1,5 @@
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import type { FormField } from "../types";
+import styles from "@/styles/FormBuilder.module.css";
 
 interface FormFieldRendererProps {
   field: FormField;
@@ -12,10 +7,6 @@ interface FormFieldRendererProps {
   onChange: (value: string | boolean) => void;
 }
 
-/**
- * Presentational component: renders a single form field based on its type.
- * Keeps rendering logic reusable and decoupled from form state.
- */
 const FormFieldRenderer = ({ field, value, onChange }: FormFieldRendererProps) => {
   switch (field.type) {
     case "text":
@@ -23,7 +14,8 @@ const FormFieldRenderer = ({ field, value, onChange }: FormFieldRendererProps) =
     case "number":
     case "date":
       return (
-        <Input
+        <input
+          className={styles.input}
           type={field.type}
           value={(value as string) ?? ""}
           onChange={(e) => onChange(e.target.value)}
@@ -32,7 +24,8 @@ const FormFieldRenderer = ({ field, value, onChange }: FormFieldRendererProps) =
       );
     case "textarea":
       return (
-        <Textarea
+        <textarea
+          className={styles.textarea}
           value={(value as string) ?? ""}
           onChange={(e) => onChange(e.target.value)}
           placeholder={`Enter ${field.label.toLowerCase()}`}
@@ -41,38 +34,52 @@ const FormFieldRenderer = ({ field, value, onChange }: FormFieldRendererProps) =
       );
     case "select":
       return (
-        <Select value={(value as string) ?? ""} onValueChange={(v) => onChange(v)}>
-          <SelectTrigger>
-            <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
-          </SelectTrigger>
-          <SelectContent>
-            {(field.options ?? []).map((opt, i) => (
-              <SelectItem key={i} value={opt || `option-${i}`}>{opt || `Option ${i + 1}`}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <select
+          className={styles.select}
+          value={(value as string) ?? ""}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          <option value="">Select {field.label.toLowerCase()}</option>
+          {(field.options ?? []).map((opt, i) => (
+            <option key={i} value={opt || `option-${i}`}>
+              {opt || `Option ${i + 1}`}
+            </option>
+          ))}
+        </select>
       );
     case "radio":
       return (
-        <RadioGroup value={(value as string) ?? ""} onValueChange={(v) => onChange(v)}>
-          {(field.options ?? []).map((opt, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <RadioGroupItem value={opt || `option-${i}`} id={`${field.id}-${i}`} />
-              <Label htmlFor={`${field.id}-${i}`}>{opt || `Option ${i + 1}`}</Label>
-            </div>
-          ))}
-        </RadioGroup>
+        <div className={styles.radioGroup}>
+          {(field.options ?? []).map((opt, i) => {
+            const val = opt || `option-${i}`;
+            return (
+              <label key={i} className={styles.radioRow}>
+                <input
+                  type="radio"
+                  className={styles.radio}
+                  name={field.id}
+                  value={val}
+                  checked={(value as string) === val}
+                  onChange={() => onChange(val)}
+                />
+                <span>{opt || `Option ${i + 1}`}</span>
+              </label>
+            );
+          })}
+        </div>
       );
     case "checkbox":
       return (
-        <div className="flex items-center gap-2">
-          <Checkbox
+        <label className={styles.checkboxRow}>
+          <input
+            type="checkbox"
+            className={styles.checkbox}
             id={`cb-${field.id}`}
             checked={!!value}
-            onCheckedChange={(c) => onChange(!!c)}
+            onChange={(e) => onChange(e.target.checked)}
           />
-          <Label htmlFor={`cb-${field.id}`}>{field.label}</Label>
-        </div>
+          <span className={styles.checkboxLabel}>{field.label}</span>
+        </label>
       );
     default:
       return null;

@@ -1,10 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Trash2, GripVertical, Plus } from "lucide-react";
 import type { FormField, FieldType } from "../types";
+import styles from "@/styles/FormBuilder.module.css";
 
 const FIELD_TYPES: { value: FieldType; label: string }[] = [
   { value: "text", label: "Text Input" },
@@ -28,62 +24,75 @@ interface FieldEditorProps {
 }
 
 const FieldEditor = ({ field, index, canRemove, needsOptions, onUpdate, onChangeType, onRemove }: FieldEditorProps) => (
-  <div className="rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-sm">
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 text-muted-foreground">
+  <div className={styles.fieldCard}>
+    <div className={styles.fieldHeader}>
+      <div className={styles.fieldMeta}>
         <GripVertical size={16} />
-        <span className="text-sm font-medium">Field {index + 1}</span>
+        <span>Field {index + 1}</span>
       </div>
-      <Button
-        variant="ghost"
-        size="sm"
+      <button
+        type="button"
+        className={`${styles.btn} ${styles.btnGhost} ${styles.btnIcon} ${styles.btnDanger}`}
         onClick={() => onRemove(field.id)}
         disabled={!canRemove}
-        className="text-destructive hover:text-destructive"
+        aria-label="Remove field"
       >
         <Trash2 size={16} />
-      </Button>
+      </button>
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <Label>Label / Name</Label>
-        <Input
+    <div className={styles.grid}>
+      <div className={styles.fieldGroup}>
+        <label className={styles.label} htmlFor={`label-${field.id}`}>
+          Label / Name
+        </label>
+        <input
+          id={`label-${field.id}`}
+          className={styles.input}
           placeholder="e.g. User Name"
           value={field.label}
           onChange={(e) => onUpdate(field.id, { label: e.target.value })}
         />
       </div>
-      <div className="space-y-2">
-        <Label>Input Type</Label>
-        <Select value={field.type} onValueChange={(v) => onChangeType(field.id, v as FieldType, field.options)}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {FIELD_TYPES.map((t) => (
-              <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className={styles.fieldGroup}>
+        <label className={styles.label} htmlFor={`type-${field.id}`}>
+          Input Type
+        </label>
+        <select
+          id={`type-${field.id}`}
+          className={styles.select}
+          value={field.type}
+          onChange={(e) => onChangeType(field.id, e.target.value as FieldType, field.options)}
+        >
+          {FIELD_TYPES.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
 
-    <div className="flex items-center gap-2">
-      <Checkbox
+    <div className={styles.checkboxRow}>
+      <input
+        type="checkbox"
         id={`req-${field.id}`}
+        className={styles.checkbox}
         checked={field.required}
-        onCheckedChange={(c) => onUpdate(field.id, { required: !!c })}
+        onChange={(e) => onUpdate(field.id, { required: e.target.checked })}
       />
-      <Label htmlFor={`req-${field.id}`} className="text-sm">Required</Label>
+      <label className={styles.label} htmlFor={`req-${field.id}`}>
+        Required
+      </label>
     </div>
 
     {needsOptions(field.type) && (
-      <div className="space-y-2 pl-4 border-l-2 border-primary/20">
-        <Label className="text-sm">Options</Label>
+      <div className={styles.optionsBlock}>
+        <span className={styles.label}>Options</span>
         {(field.options ?? []).map((opt, oi) => (
-          <div key={oi} className="flex items-center gap-2">
-            <Input
+          <div key={oi} className={styles.optionRow}>
+            <input
+              className={styles.input}
               value={opt}
               placeholder={`Option ${oi + 1}`}
               onChange={(e) => {
@@ -91,25 +100,25 @@ const FieldEditor = ({ field, index, canRemove, needsOptions, onUpdate, onChange
                 newOpts[oi] = e.target.value;
                 onUpdate(field.id, { options: newOpts });
               }}
-              className="flex-1"
             />
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.btnGhost} ${styles.btnIcon} ${styles.btnDanger}`}
               onClick={() => onUpdate(field.id, { options: (field.options ?? []).filter((_, i) => i !== oi) })}
               disabled={(field.options ?? []).length <= 1}
+              aria-label="Remove option"
             >
               <Trash2 size={14} />
-            </Button>
+            </button>
           </div>
         ))}
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
+          type="button"
+          className={`${styles.btn} ${styles.btnGhost}`}
           onClick={() => onUpdate(field.id, { options: [...(field.options ?? []), ""] })}
         >
-          <Plus size={14} className="mr-1" /> Add Option
-        </Button>
+          <Plus size={14} /> Add Option
+        </button>
       </div>
     )}
   </div>
