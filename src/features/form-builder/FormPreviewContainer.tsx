@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -9,13 +9,11 @@ import styles from "@/styles/FormBuilder.module.css";
 
 const FormPreviewContainer = () => {
   const navigate = useNavigate();
-  const [fields, setFields] = useState<FormField[]>([]);
-  const [values, setValues] = useState<Record<string, string | boolean>>({});
-
-  useEffect(() => {
+  const [fields] = useState<FormField[]>(() => {
     const config = loadFormConfig();
-    if (config?.fields.length) setFields(config.fields);
-  }, []);
+    return config?.fields.length ? config.fields : [];
+  });
+  const [values, setValues] = useState<Record<string, string | boolean>>({});
 
   const setValue = (id: string, value: string | boolean) => {
     setValues((prev) => ({ ...prev, [id]: value }));
