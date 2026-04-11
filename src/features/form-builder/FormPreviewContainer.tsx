@@ -3,10 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Send } from "lucide-react";
+import { toast } from "sonner";
 import type { FormField } from "./types";
 import { loadFormConfig } from "./utils/storage";
 import FormFieldRenderer from "./components/FormFieldRenderer";
 
+/**
+ * Container component: loads saved form config, manages form values,
+ * validates on submit, and logs output.
+ */
 const FormPreviewContainer = () => {
   const navigate = useNavigate();
   const [fields, setFields] = useState<FormField[]>([]);
@@ -29,6 +34,17 @@ const FormPreviewContainer = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFormValid) {
+      const missing = fields.find((f) => f.required && (values[f.id] === undefined || values[f.id] === "" || values[f.id] === false));
+      if (missing) toast.error(`"${missing.label}" is required.`);
+      return;
+    }
+
+    const output: Record<string, string | boolean> = {};
+    fields.forEach((f) => { output[f.label] = values[f.id] ?? ""; });
+    console.log("=== Form Submitted ===");
+    console.log(JSON.stringify(output, null, 2));
+    toast.success("Form submitted! Check the console for data.");
   };
 
   if (!fields.length) {
