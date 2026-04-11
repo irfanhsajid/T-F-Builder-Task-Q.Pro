@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import type { FormField, FieldType } from "../types";
+import { saveFormConfig, loadFormConfig } from "../utils/storage";
 
 const createField = (): FormField => ({
   id: crypto.randomUUID(),
@@ -13,7 +14,10 @@ const createField = (): FormField => ({
 const needsOptions = (type: FieldType): boolean => type === "select" || type === "radio";
 
 export const useFormBuilder = () => {
-  const [fields, setFields] = useState<FormField[]>([createField()]);
+  const [fields, setFields] = useState<FormField[]>(() => {
+    const config = loadFormConfig();
+    return config?.fields.length ? config.fields : [createField()];
+  });
 
   const addField = useCallback(() => {
     setFields((prev) => [...prev, createField()]);
@@ -40,7 +44,8 @@ export const useFormBuilder = () => {
       toast.error("All fields must have a label.");
       return false;
     }
-    toast.success("Form saved (persistence added in a later commit).");
+    saveFormConfig({ fields });
+    toast.success("Form saved successfully!");
     return true;
   }, [fields]);
 
