@@ -4,9 +4,13 @@ import { Plus, Eye, Save } from "lucide-react";
 import { useFormBuilder } from "./hooks/useFormBuilder";
 import FieldEditor from "./components/FieldEditor";
 
+/**
+ * Container component: manages form builder state via useFormBuilder hook.
+ * Delegates field rendering to FieldEditor presentational component.
+ */
 const FormBuilderContainer = () => {
   const navigate = useNavigate();
-  const { fields, addField, removeField, updateField, save } = useFormBuilder();
+  const { fields, addField, removeField, updateField, changeFieldType, save, needsOptions } = useFormBuilder();
 
   const handlePreview = () => {
     if (save()) navigate("/form-preview");
@@ -33,7 +37,9 @@ const FormBuilderContainer = () => {
             field={field}
             index={idx}
             canRemove={fields.length > 1}
+            needsOptions={needsOptions}
             onUpdate={updateField}
+            onChangeType={changeFieldType}
             onRemove={removeField}
           />
         ))}
