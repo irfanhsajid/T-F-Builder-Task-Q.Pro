@@ -1,10 +1,15 @@
 import { Loader2 } from "lucide-react";
 import { useTodos, useUsers } from "./hooks/useTodos";
+import { useTodoFilters } from "./hooks/useTodoFilters";
+import { useFilteredTodos } from "./hooks/useFilteredTodos";
+import TodoFilters from "./components/TodoFilters";
 import TodoTable from "./components/TodoTable";
 
 const TodoListContainer = () => {
   const { todos, isLoading: todosLoading, isError: todosError } = useTodos();
-  const { userMap, isLoading: usersLoading, isError: usersError } = useUsers();
+  const { users, userMap, isLoading: usersLoading, isError: usersError } = useUsers();
+  const { filters, setFilters } = useTodoFilters();
+  const { filtered, paginated, page, totalPages, pageSize } = useFilteredTodos(todos, filters);
 
   const isLoading = todosLoading || usersLoading;
   const isError = todosError || usersError;
@@ -24,7 +29,8 @@ const TodoListContainer = () => {
   return (
     <div className="animate-fade-in space-y-6">
       <h1 className="text-2xl font-bold text-foreground">Todo List</h1>
-      <TodoTable todos={todos} userMap={userMap} />
+      <TodoFilters filters={filters} users={users} onFilterChange={setFilters} />
+      <TodoTable todos={paginated} userMap={userMap} />
     </div>
   );
 };
