@@ -6,10 +6,6 @@
   animation: fadeIn 0.35s ease;
 }
 
-.pageWide {
-  /* max-width: 42rem; */
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;

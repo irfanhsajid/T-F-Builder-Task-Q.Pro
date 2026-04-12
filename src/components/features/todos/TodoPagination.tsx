@@ -86,7 +86,7 @@ const TodoPagination = ({
             { value: "10", label: "10 / page" },
             { value: "20", label: "20 / page" },
             { value: "50", label: "50 / page" },
-            { value: "all", label: "All / page" },
+            { value: "all", label: "All Results" },
           ]}
           value={pageSizeSetting === "all" ? "all" : String(pageSizeSetting)}
           onChange={(v) => onPageSizeChange(parsePageSize(v))}

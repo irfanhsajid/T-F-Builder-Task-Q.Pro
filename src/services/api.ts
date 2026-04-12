@@ -9,8 +9,9 @@ const BASE_URL = "https://jsonplaceholder.typicode.com";
 
 /** JSONPlaceholder (json-server) query params for /todos. */
 export type FetchTodosPageParams = {
-  page: number;
-  limit: number;
+  /** When omitted, the request is unpaged: no `_page` / `_limit` (full result set for current filters). */
+  page?: number;
+  limit?: number;
   userId?: string;
   status?: "completed" | "pending";
   search?: string;
@@ -18,17 +19,22 @@ export type FetchTodosPageParams = {
 
 export const api = {
   /**
-   * Paginated todos with server-side filters (see
+   * Todos with server-side filters (see
    * https://jsonplaceholder.typicode.com/todos?_page=1&_limit=20&userId=1&completed=true ).
-   * Total row count comes from the `X-Total-Count` response header.
+   * Pass `page` + `limit` for pagination; omit both to fetch all matching rows (no cap).
+   * Total row count comes from the `X-Total-Count` response header when present.
    */
   async fetchTodosPage(params: FetchTodosPageParams): Promise<{
     todos: Todo[];
     total: number;
   }> {
     const sp = new URLSearchParams();
-    sp.set("_page", String(params.page));
-    sp.set("_limit", String(params.limit));
+    const paginated =
+      params.page !== undefined && params.limit !== undefined;
+    if (paginated) {
+      sp.set("_page", String(params.page));
+      sp.set("_limit", String(params.limit));
+    }
     if (params.userId) sp.set("userId", params.userId);
     if (params.status === "completed") sp.set("completed", "true");
     if (params.status === "pending") sp.set("completed", "false");

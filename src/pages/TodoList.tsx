@@ -5,12 +5,7 @@ import TodoFilters from "@/components/features/todos/TodoFilters";
 import TodoTable from "@/components/features/todos/TodoTable";
 import TodoTableSkeleton from "@/components/features/todos/TodoTableSkeleton";
 import TodoPagination from "@/components/features/todos/TodoPagination";
-import type { TodoPageSize } from "@/types/todos";
 import styles from "@/styles/Todo.module.css";
-
-function effectiveLimit(pageSize: TodoPageSize): number {
-  return pageSize === "all" ? 200 : pageSize;
-}
 
 /**
  * Container: server-side pagination & filters via JSONPlaceholder query params.
@@ -31,11 +26,10 @@ const TodoListPageContainer = () => {
     isError: usersError,
   } = useUsers();
 
-  const limit = effectiveLimit(filters.pageSize);
   const totalPages = useMemo(() => {
     if (filters.pageSize === "all") return 1;
-    return Math.max(1, Math.ceil(totalCount / limit));
-  }, [totalCount, limit, filters.pageSize]);
+    return Math.max(1, Math.ceil(totalCount / filters.pageSize));
+  }, [totalCount, filters.pageSize]);
 
   const page = Math.min(filters.page, totalPages);
 
@@ -84,7 +78,7 @@ const TodoListPageContainer = () => {
         page={page}
         totalPages={totalPages}
         totalItems={totalCount}
-        pageSize={filters.pageSize === "all" ? "all" : limit}
+        pageSize={filters.pageSize === "all" ? "all" : filters.pageSize}
         pageSizeSetting={filters.pageSize}
         onPageChange={(p) => setFilters({ page: p })}
         onPageSizeChange={(ps) => setFilters({ pageSize: ps, page: 1 })}

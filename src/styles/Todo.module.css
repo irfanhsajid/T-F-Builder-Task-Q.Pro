@@ -281,14 +281,26 @@
 }
 
 .paginationPageSize {
-  width: 4.25rem;
   flex-shrink: 0;
+}
+
+/*
+ * CustomSelect’s root merges .wrapper (width: 100%) with this class; a single-class
+ * rule loses in the cascade. Anchor under .paginationMeta so width actually applies.
+ */
+.paginationMeta .paginationPageSize {
+  /* Wide enough for “All / page” on one line in trigger + listbox (list matches trigger). */
+  width: 9.5rem;
 }
 
 .paginationPageSize button {
   min-height: 2.25rem;
-  padding: 0.4rem 0.4rem 0.4rem 0.5rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.5rem;
   font-size: 0.8125rem;
+}
+
+.paginationPageSize li[role="option"] {
+  white-space: nowrap;
 }
 
 .paginationNav {
