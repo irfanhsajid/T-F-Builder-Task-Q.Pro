@@ -2,6 +2,7 @@ export type FieldType =
   | "text"
   | "number"
   | "email"
+  | "tel"
   | "textarea"
   | "select"
   | "checkbox"
@@ -23,6 +24,8 @@ export interface FormField {
   step?: number;
   /** Used when `type === "file"` (e.g. `image/*`, `.pdf`) */
   accept?: string;
+  /** Shown in preview for supported input types (text, email, phone, etc.) */
+  placeholder?: string;
 }
 
 export interface FormConfig {

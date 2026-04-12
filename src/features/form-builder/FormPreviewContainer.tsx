@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send } from "lucide-react";
-import { toast } from "sonner";
 import type { FormField } from "./types";
 import { loadFormConfig } from "./utils/storage";
+import {
+  INVALID_EMAIL_MSG,
+  INVALID_PHONE_MSG,
+  isValidEmail,
+  isValidPhone,
+} from "./utils/validation";
 import FormFieldRenderer from "./components/FormFieldRenderer";
+import FormSubmitResult from "./components/FormSubmitResult";
 import styles from "@/styles/FormBuilder.module.css";
 
 const REQUIRED_MSG = "This field is required";
@@ -47,6 +53,10 @@ const FormPreviewContainer = () => {
     return fs.length ? buildInitialValues(fs) : {};
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [submittedData, setSubmittedData] = useState<Record<
+    string,
+    string | boolean
+  > | null>(null);
 
   const setValue = (id: string, value: string | boolean) => {
     setValues((prev) => ({ ...prev, [id]: value }));
@@ -66,8 +76,24 @@ const FormPreviewContainer = () => {
         next[f.id] = REQUIRED_MSG;
       }
     }
-    setFieldErrors(next);
     if (Object.keys(next).length > 0) {
+      setFieldErrors(next);
+      return;
+    }
+
+    for (const f of fields) {
+      const raw = values[f.id];
+      if (typeof raw !== "string") continue;
+      const t = raw.trim();
+      if (t === "") continue;
+      if (f.type === "email" && !isValidEmail(t)) {
+        next[f.id] = INVALID_EMAIL_MSG;
+      } else if (f.type === "tel" && !isValidPhone(t)) {
+        next[f.id] = INVALID_PHONE_MSG;
+      }
+    }
+    if (Object.keys(next).length > 0) {
+      setFieldErrors(next);
       return;
     }
 
@@ -77,7 +103,8 @@ const FormPreviewContainer = () => {
     });
     console.log("=== Form Submitted ===");
     console.log(JSON.stringify(output, null, 2));
-    toast.success("Form submitted! Check the console for data.");
+    setFieldErrors({});
+    setSubmittedData(output);
   };
 
   if (!fields.length) {
@@ -101,45 +128,54 @@ const FormPreviewContainer = () => {
     <div className={`${styles.page} ${styles.pageWide}`}>
       <div className={styles.previewHeader}>
         <h1 className={styles.title}>Form Preview</h1>
-        <button
-          type="button"
-          className={`${styles.btn} ${styles.btnOutline}`}
-          onClick={() => navigate("/form-builder")}
-          aria-label="Back to builder"
-        >
-          <ArrowLeft size={16} /> Back to Builder
-        </button>
+        {!submittedData && (
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnOutline}`}
+            onClick={() => navigate("/form-builder")}
+            aria-label="Back to builder"
+          >
+            <ArrowLeft size={16} /> Back to Builder
+          </button>
+        )}
       </div>
 
-      <form className={styles.previewForm} onSubmit={handleSubmit} noValidate>
-        {fields.map((field) => (
-          <div key={field.id} className={styles.fieldBlock}>
-            {field.type !== "checkbox" && (
-              <label className={styles.labelInline}>
-                {field.label}
-                {field.required && (
-                  <span className={styles.requiredMark}>*</span>
-                )}
-              </label>
-            )}
-            <FormFieldRenderer
-              field={field}
-              value={
-                values[field.id] ?? (field.type === "checkbox" ? false : "")
-              }
-              onChange={(v) => setValue(field.id, v)}
-              error={fieldErrors[field.id]}
-            />
-          </div>
-        ))}
+      {submittedData ? (
+        <FormSubmitResult
+          data={submittedData}
+          onBackToBuilder={() => navigate("/form-builder")}
+        />
+      ) : (
+        <form className={styles.previewForm} onSubmit={handleSubmit} noValidate>
+          {fields.map((field) => (
+            <div key={field.id} className={styles.fieldBlock}>
+              {field.type !== "checkbox" && (
+                <label className={styles.labelInline}>
+                  {field.label}
+                  {field.required && (
+                    <span className={styles.requiredMark}>*</span>
+                  )}
+                </label>
+              )}
+              <FormFieldRenderer
+                field={field}
+                value={
+                  values[field.id] ?? (field.type === "checkbox" ? false : "")
+                }
+                onChange={(v) => setValue(field.id, v)}
+                error={fieldErrors[field.id]}
+              />
+            </div>
+          ))}
 
-        <button
-          type="submit"
-          className={`${styles.btn} ${styles.btnPrimary} ${styles.btnBlock}`}
-        >
-          <Send size={16} /> Submit
-        </button>
-      </form>
+          <button
+            type="submit"
+            className={`${styles.btn} ${styles.btnPrimary} ${styles.btnBlock}`}
+          >
+            <Send size={16} /> Submit
+          </button>
+        </form>
+      )}
     </div>
   );
 };

@@ -7,14 +7,15 @@ const FIELD_TYPES: { value: FieldType; label: string }[] = [
   { value: "text", label: "Text Input" },
   { value: "number", label: "Number" },
   { value: "email", label: "Email" },
+  { value: "tel", label: "Phone Number" },
   { value: "textarea", label: "Text Area" },
-  { value: "select", label: "Dropdown" },
+  { value: "file", label: "File Upload" },
+  { value: "select", label: "Select Dropdown" },
   { value: "radio", label: "Radio Buttons" },
   { value: "checkbox", label: "Checkbox" },
   { value: "date", label: "Date" },
   { value: "time", label: "Time" },
   { value: "range", label: "Range Slider" },
-  { value: "file", label: "File Upload" },
 ];
 
 interface FieldEditorProps {
@@ -29,6 +30,19 @@ interface FieldEditorProps {
     currentOptions?: string[],
   ) => void;
   onRemove: (id: string) => void;
+}
+
+function supportsPlaceholder(type: FieldType): boolean {
+  return (
+    type === "text" ||
+    type === "email" ||
+    type === "tel" ||
+    type === "number" ||
+    type === "textarea" ||
+    type === "date" ||
+    type === "time" ||
+    type === "select"
+  );
 }
 
 const FieldEditor = ({
@@ -78,18 +92,45 @@ const FieldEditor = ({
       />
     </div>
 
-    <div className={styles.checkboxRow}>
-      <input
-        type="checkbox"
-        id={`req-${field.id}`}
-        className={styles.checkbox}
-        checked={field.required}
-        onChange={(e) => onUpdate(field.id, { required: e.target.checked })}
-      />
-      <label className={styles.label} htmlFor={`req-${field.id}`}>
-        Required
-      </label>
-    </div>
+    {supportsPlaceholder(field.type) && (
+      <div className={`${styles.grid} ${styles.placeholderRequiredGrid}`}>
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor={`ph-${field.id}`}>
+            Placeholder text
+          </label>
+          <input
+            id={`ph-${field.id}`}
+            className={styles.input}
+            placeholder="Optional hint shown inside the field"
+            value={field.placeholder ?? ""}
+            onChange={(e) =>
+              onUpdate(field.id, {
+                placeholder:
+                  e.target.value === "" ? undefined : e.target.value,
+              })
+            }
+          />
+        </div>
+        <div className={styles.placeholderRequiredCheckboxCell}>
+          <div
+            className={`${styles.checkboxRow} ${styles.checkboxRowNoTopMargin}`}
+          >
+            <input
+              type="checkbox"
+              id={`req-${field.id}`}
+              className={styles.checkbox}
+              checked={field.required}
+              onChange={(e) =>
+                onUpdate(field.id, { required: e.target.checked })
+              }
+            />
+            <label className={styles.label} htmlFor={`req-${field.id}`}>
+              Mark as required
+            </label>
+          </div>
+        </div>
+      </div>
+    )}
 
     {field.type === "range" && (
       <div className={styles.rangeSettings}>
@@ -155,7 +196,9 @@ const FieldEditor = ({
           className={styles.input}
           placeholder="e.g. image/* or .pdf,.doc"
           value={field.accept ?? ""}
-          onChange={(e) => onUpdate(field.id, { accept: e.target.value || undefined })}
+          onChange={(e) =>
+            onUpdate(field.id, { accept: e.target.value || undefined })
+          }
         />
       </div>
     )}

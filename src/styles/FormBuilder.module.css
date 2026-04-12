@@ -95,7 +95,7 @@
 .label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 .input,
@@ -134,6 +134,10 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
+}
+
+.checkboxRowNoTopMargin {
+  margin-top: 0;
 }
 
 .checkbox {
@@ -389,4 +393,91 @@
 .fileInput {
   padding: 0.45rem 0.5rem;
   cursor: pointer;
+}
+
+/* Same columns as .grid; optional row after label / input type */
+.placeholderRequiredGrid {
+  margin-top: 1rem;
+}
+
+.placeholderRequiredCheckboxCell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.submitResult {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.submitResultHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.submitResultTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.submitResultHint {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.submitResultHintIcon {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--text-muted);
+}
+
+.submitResultBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.submitResultLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.submitResultPre {
+  margin: 0;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(148, 163, 184, 0.08);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  overflow: auto;
+  max-height: min(50vh, 24rem);
+  color: var(--text-primary);
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.submitResultActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }

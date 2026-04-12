@@ -9,6 +9,11 @@ interface FormFieldRendererProps {
   error?: string;
 }
 
+function resolvePlaceholder(field: FormField, fallback: string): string {
+  const p = field.placeholder?.trim();
+  return p ? p : fallback;
+}
+
 const FormFieldRenderer = ({ field, value, onChange, error }: FormFieldRendererProps) => {
   const errClass = error ? styles.inputError : "";
   const errText = error ? (
@@ -20,6 +25,7 @@ const FormFieldRenderer = ({ field, value, onChange, error }: FormFieldRendererP
   switch (field.type) {
     case "text":
     case "email":
+    case "tel":
     case "number":
     case "date":
     case "time":
@@ -30,7 +36,10 @@ const FormFieldRenderer = ({ field, value, onChange, error }: FormFieldRendererP
             type={field.type}
             value={(value as string) ?? ""}
             onChange={(e) => onChange(e.target.value)}
-            placeholder={`Enter ${field.label.toLowerCase()}`}
+            placeholder={resolvePlaceholder(
+              field,
+              `Enter ${field.label.toLowerCase()}`,
+            )}
             aria-invalid={!!error}
           />
           {errText}
@@ -43,7 +52,10 @@ const FormFieldRenderer = ({ field, value, onChange, error }: FormFieldRendererP
             className={`${styles.textarea} ${errClass}`}
             value={(value as string) ?? ""}
             onChange={(e) => onChange(e.target.value)}
-            placeholder={`Enter ${field.label.toLowerCase()}`}
+            placeholder={resolvePlaceholder(
+              field,
+              `Enter ${field.label.toLowerCase()}`,
+            )}
             rows={3}
             aria-invalid={!!error}
           />
@@ -60,7 +72,10 @@ const FormFieldRenderer = ({ field, value, onChange, error }: FormFieldRendererP
           options={opts}
           value={(value as string) ?? ""}
           onChange={(v) => onChange(v)}
-          placeholder={`Select ${field.label.toLowerCase()}`}
+          placeholder={resolvePlaceholder(
+            field,
+            `Select ${field.label.toLowerCase()}`,
+          )}
           error={error}
         />
       );
