@@ -1,3 +1,4 @@
+import { CheckCircle2, Clock } from "lucide-react";
 import type { Todo } from "../types";
 import styles from "@/styles/Todo.module.css";
 
@@ -11,7 +12,7 @@ const TodoTable = ({ todos, userMap }: TodoTableProps) => (
     <table className={styles.table}>
       <thead>
         <tr>
-          <th>Title</th>
+          <th>Task Title</th>
           <th>Assigned To</th>
           <th>Status</th>
         </tr>
@@ -45,6 +46,15 @@ const TodoTable = ({ todos, userMap }: TodoTableProps) => (
                     todo.completed ? styles.badgeSuccess : styles.badgeMuted
                   }
                 >
+                  {todo.completed ? (
+                    <CheckCircle2
+                      className={styles.badgeIcon}
+                      size={14}
+                      aria-hidden
+                    />
+                  ) : (
+                    <Clock className={styles.badgeIcon} size={14} aria-hidden />
+                  )}
                   {todo.completed ? "Completed" : "Pending"}
                 </span>
               </td>

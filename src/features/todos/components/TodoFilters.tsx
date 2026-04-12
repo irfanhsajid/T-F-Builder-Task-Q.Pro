@@ -1,4 +1,4 @@
-import { Search, Undo, X } from "lucide-react";
+import { Search, Undo } from "lucide-react";
 import type { User, TodoFilters as Filters } from "../types";
 import styles from "@/styles/Todo.module.css";
 import CustomSelect from "@/components/ui/CustomSelect";
@@ -12,7 +12,11 @@ interface TodoFiltersProps {
 
 function hasActiveTodoFilters(f: Filters) {
   return (
-    f.search.trim() !== "" || f.userId !== "" || f.status !== "" || f.page !== 1
+    f.search.trim() !== "" ||
+    f.userId !== "" ||
+    f.status !== "" ||
+    f.page !== 1 ||
+    f.pageSize !== 10
   );
 }
 

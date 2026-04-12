@@ -131,6 +131,12 @@
   scrollbar-color: var(--text-muted) transparent;
 }
 
+.listboxAbove {
+  top: auto;
+  bottom: calc(100% + 6px);
+  animation: selectFadeInAbove 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .listbox::-webkit-scrollbar {
   width: 4px;
 }
@@ -146,6 +152,17 @@
   from {
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes selectFadeInAbove {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
   }
   to {
     opacity: 1;

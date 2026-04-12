@@ -47,7 +47,9 @@ const TodoListContainer = () => {
         totalPages={totalPages}
         totalItems={filtered.length}
         pageSize={pageSize}
+        pageSizeSetting={filters.pageSize}
         onPageChange={(p) => setFilters({ page: p })}
+        onPageSizeChange={(ps) => setFilters({ pageSize: ps, page: 1 })}
       />
     </div>
   );

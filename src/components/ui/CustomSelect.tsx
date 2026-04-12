@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect, useId, KeyboardEvent } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useId,
+  KeyboardEvent,
+} from "react";
 import styles from "../../styles/CustomSelect.module.css";
 import { Check } from "lucide-react";
 
@@ -26,6 +33,8 @@ export interface CustomSelectProps {
   hint?: string;
   error?: string;
   className?: string;
+  /** Where the listbox opens. `auto` picks above or below from available viewport space. */
+  placement?: "auto" | "below" | "above";
 }
 
 function isGroup(item: SelectOption | SelectGroup): item is SelectGroup {
@@ -47,6 +56,7 @@ export default function CustomSelect({
   hint,
   error,
   className,
+  placement = "below",
 }: CustomSelectProps) {
   const id = useId();
   const listboxId = `${id}-listbox`;
@@ -57,6 +67,7 @@ export default function CustomSelect({
 
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const [autoPlacement, setAutoPlacement] = useState<"below" | "above">("below");
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -74,6 +85,24 @@ export default function CustomSelect({
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
+
+  /* ── flip listbox above trigger when there is not enough space below (e.g. page footer) ── */
+  useLayoutEffect(() => {
+    if (!open || placement !== "auto") return;
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    const gap = 6;
+    const rowH = 36;
+    const maxList = 260;
+    const estHeight = Math.min(maxList, allFlat.length * rowH + 16);
+    const margin = 12;
+    const spaceBelow = window.innerHeight - rect.bottom - gap - margin;
+    const spaceAbove = rect.top - gap - margin;
+    setAutoPlacement(
+      spaceBelow >= estHeight || spaceBelow >= spaceAbove ? "below" : "above",
+    );
+  }, [open, placement, allFlat.length]);
 
   /* ── scroll active item into view ── */
   useEffect(() => {
@@ -163,6 +192,9 @@ export default function CustomSelect({
     }
   }
 
+  const effectivePlacement =
+    placement === "above" ? "above" : placement === "below" ? "below" : autoPlacement;
+
   /* ── render ── */
   let flatIndex = -1; // tracks absolute index across groups
 
@@ -214,7 +246,12 @@ export default function CustomSelect({
             ref={listRef}
             role="listbox"
             aria-label={label}
-            className={styles.listbox}
+            className={[
+              styles.listbox,
+              effectivePlacement === "above" && styles.listboxAbove,
+            ]
+              .filter(Boolean)
+              .join(" ")}
           >
             {options.map((item, groupIdx) => {
               if (isGroup(item)) {
