@@ -20,24 +20,6 @@
   color: var(--text-primary);
 }
 
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8rem 1rem;
-}
-
-.spinner {
-  animation: spin 0.8s linear infinite;
-  color: var(--primary);
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .error {
   padding: 4rem 1rem;
   text-align: center;
@@ -149,6 +131,10 @@
   box-shadow: var(--shadow-sm);
 }
 
+.tableWrapFetching {
+  pointer-events: none;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -194,6 +180,45 @@
   padding: 3rem 1rem !important;
   text-align: center;
   color: var(--text-muted);
+}
+
+.skeletonRow {
+  pointer-events: none;
+}
+
+.skeletonRow:hover {
+  background: transparent;
+}
+
+.skeletonBar,
+.skeletonBadge {
+  display: block;
+  height: 0.75rem;
+  border-radius: var(--radius-sm);
+  max-width: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.14) 0%,
+    rgba(148, 163, 184, 0.28) 50%,
+    rgba(148, 163, 184, 0.14) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.15s ease-in-out infinite;
+}
+
+.skeletonBadge {
+  width: 5.5rem;
+  height: 1.35rem;
+  border-radius: 9999px;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 .badge {

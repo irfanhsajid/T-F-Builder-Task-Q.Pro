@@ -14,7 +14,7 @@ const AppLayout = () => {
       <nav className={layout.nav}>
         <div className={layout.navInner}>
           <Link to="/todos">
-            <span className={layout.brand}>Q Pro - Assessment</span>
+            <span className={layout.brand}>QPro - Assessment</span>
           </Link>
           <div className={layout.navLinks}>
             {navItems.map(({ to, label, icon: Icon }) => (

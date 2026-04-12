@@ -23,7 +23,9 @@ function isRequiredFieldEmpty(
   return val === undefined || val === false || String(val).trim() === "";
 }
 
-function buildInitialValues(formFields: FormField[]): Record<string, string | boolean> {
+function buildInitialValues(
+  formFields: FormField[],
+): Record<string, string | boolean> {
   const init: Record<string, string | boolean> = {};
   for (const f of formFields) {
     if (f.type === "checkbox") init[f.id] = false;
@@ -82,7 +84,7 @@ const FormPreviewContainer = () => {
     return (
       <div className={`${styles.page} ${styles.pageWide}`}>
         <div className={styles.emptyState}>
-          <p>No form has been created yet.</p>
+          <p>No form has been created yet. Please create a form first.</p>
           <button
             type="button"
             className={`${styles.btn} ${styles.btnPrimary}`}

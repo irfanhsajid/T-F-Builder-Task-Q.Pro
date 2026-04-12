@@ -37,7 +37,8 @@ const FormBuilderContainer = () => {
             className={`${styles.btn} ${styles.btnPrimary}`}
             onClick={handlePreview}
           >
-            <Eye size={16} /> Preview Form
+            <Eye size={16} />
+            Save & Preview
           </button>
         </div>
       </div>

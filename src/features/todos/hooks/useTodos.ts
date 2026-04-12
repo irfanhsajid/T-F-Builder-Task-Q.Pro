@@ -1,18 +1,57 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
-import type { Todo, User } from "../types";
+import type { TodoFilters, User } from "../types";
 
-export const useTodos = () => {
-  const todosQuery = useQuery<Todo[]>({
-    queryKey: ["todos"],
-    queryFn: api.fetchTodos,
+const ALL_ROWS_LIMIT = 200;
+
+function apiLimit(filters: TodoFilters): number {
+  return filters.pageSize === "all" ? ALL_ROWS_LIMIT : filters.pageSize;
+}
+
+function apiPage(filters: TodoFilters): number {
+  return filters.pageSize === "all" ? 1 : filters.page;
+}
+
+function statusForApi(
+  status: string,
+): "completed" | "pending" | undefined {
+  if (status === "completed" || status === "pending") return status;
+  return undefined;
+}
+
+export const useTodos = (filters: TodoFilters) => {
+  const limit = apiLimit(filters);
+  const page = apiPage(filters);
+  const status = statusForApi(filters.status);
+
+  const query = useQuery({
+    queryKey: [
+      "todos",
+      "page",
+      page,
+      limit,
+      filters.userId,
+      filters.status,
+      filters.search.trim(),
+    ],
+    queryFn: () =>
+      api.fetchTodosPage({
+        page,
+        limit,
+        userId: filters.userId || undefined,
+        status,
+        search: filters.search.trim() || undefined,
+      }),
+    placeholderData: keepPreviousData,
     staleTime: Infinity,
   });
 
   return {
-    todos: todosQuery.data ?? [],
-    isLoading: todosQuery.isLoading,
-    isError: todosQuery.isError,
+    todos: query.data?.todos ?? [],
+    totalCount: query.data?.total ?? 0,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    isError: query.isError,
   };
 };
 
