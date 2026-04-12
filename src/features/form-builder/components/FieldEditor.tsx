@@ -1,6 +1,7 @@
 import { Trash2, GripVertical, Plus } from "lucide-react";
 import type { FormField, FieldType } from "../types";
 import styles from "@/styles/FormBuilder.module.css";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 const FIELD_TYPES: { value: FieldType; label: string }[] = [
   { value: "text", label: "Text Input" },
@@ -19,11 +20,23 @@ interface FieldEditorProps {
   canRemove: boolean;
   needsOptions: (type: FieldType) => boolean;
   onUpdate: (id: string, update: Partial<FormField>) => void;
-  onChangeType: (id: string, type: FieldType, currentOptions?: string[]) => void;
+  onChangeType: (
+    id: string,
+    type: FieldType,
+    currentOptions?: string[],
+  ) => void;
   onRemove: (id: string) => void;
 }
 
-const FieldEditor = ({ field, index, canRemove, needsOptions, onUpdate, onChangeType, onRemove }: FieldEditorProps) => (
+const FieldEditor = ({
+  field,
+  index,
+  canRemove,
+  needsOptions,
+  onUpdate,
+  onChangeType,
+  onRemove,
+}: FieldEditorProps) => (
   <div className={styles.fieldCard}>
     <div className={styles.fieldHeader}>
       <div className={styles.fieldMeta}>
@@ -54,23 +67,12 @@ const FieldEditor = ({ field, index, canRemove, needsOptions, onUpdate, onChange
           onChange={(e) => onUpdate(field.id, { label: e.target.value })}
         />
       </div>
-      <div className={styles.fieldGroup}>
-        <label className={styles.label} htmlFor={`type-${field.id}`}>
-          Input Type
-        </label>
-        <select
-          id={`type-${field.id}`}
-          className={styles.select}
-          value={field.type}
-          onChange={(e) => onChangeType(field.id, e.target.value as FieldType, field.options)}
-        >
-          {FIELD_TYPES.map((t) => (
-            <option key={t.value} value={t.value}>
-              {t.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <CustomSelect
+        label="Input Type"
+        options={FIELD_TYPES}
+        value={field.type}
+        onChange={(v) => onChangeType(field.id, v as FieldType, field.options)}
+      />
     </div>
 
     <div className={styles.checkboxRow}>
@@ -104,7 +106,11 @@ const FieldEditor = ({ field, index, canRemove, needsOptions, onUpdate, onChange
             <button
               type="button"
               className={`${styles.btn} ${styles.btnGhost} ${styles.btnIcon} ${styles.btnDanger}`}
-              onClick={() => onUpdate(field.id, { options: (field.options ?? []).filter((_, i) => i !== oi) })}
+              onClick={() =>
+                onUpdate(field.id, {
+                  options: (field.options ?? []).filter((_, i) => i !== oi),
+                })
+              }
               disabled={(field.options ?? []).length <= 1}
               aria-label="Remove option"
             >
@@ -115,7 +121,9 @@ const FieldEditor = ({ field, index, canRemove, needsOptions, onUpdate, onChange
         <button
           type="button"
           className={`${styles.btn} ${styles.btnGhost}`}
-          onClick={() => onUpdate(field.id, { options: [...(field.options ?? []), ""] })}
+          onClick={() =>
+            onUpdate(field.id, { options: [...(field.options ?? []), ""] })
+          }
         >
           <Plus size={14} /> Add Option
         </button>

@@ -112,6 +112,11 @@
     box-shadow 0.15s ease;
 }
 
+.input {
+  min-height: var(--control-min-height);
+  line-height: 1.25;
+}
+
 .input:focus,
 .textarea:focus {
   outline: none;
@@ -122,10 +127,6 @@
 .textarea {
   min-height: 5rem;
   resize: vertical;
-}
-
-.select {
-  width: 100%;
 }
 
 .checkboxRow {

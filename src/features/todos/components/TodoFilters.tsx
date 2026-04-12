@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import type { User, TodoFilters as Filters } from "../types";
 import styles from "@/styles/Todo.module.css";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 interface TodoFiltersProps {
   filters: Filters;
@@ -20,33 +21,29 @@ const TodoFilters = ({ filters, users, onFilterChange }: TodoFiltersProps) => (
         onChange={(e) => onFilterChange({ search: e.target.value, page: 1 })}
       />
     </div>
-    <select
-      className={styles.filterSelect}
+    <CustomSelect
+      className={styles.filterSelectWrap}
+      options={[
+        { value: "all", label: "All Users" },
+        ...users.map((u) => ({ value: String(u.id), label: u.name })),
+      ]}
       value={filters.userId || "all"}
-      onChange={(e) => {
-        const v = e.target.value;
+      onChange={(v) => {
         onFilterChange({ userId: v === "all" ? "" : v, page: 1 });
       }}
-    >
-      <option value="all">All Users</option>
-      {users.map((u) => (
-        <option key={u.id} value={String(u.id)}>
-          {u.name}
-        </option>
-      ))}
-    </select>
-    <select
-      className={styles.filterSelectNarrow}
+    />
+    <CustomSelect
+      className={styles.filterSelectNarrowWrap}
+      options={[
+        { value: "all", label: "All Status" },
+        { value: "completed", label: "Completed" },
+        { value: "pending", label: "Pending" },
+      ]}
       value={filters.status || "all"}
-      onChange={(e) => {
-        const v = e.target.value;
+      onChange={(v) => {
         onFilterChange({ status: v === "all" ? "" : v, page: 1 });
       }}
-    >
-      <option value="all">All Status</option>
-      <option value="completed">Completed</option>
-      <option value="pending">Pending</option>
-    </select>
+    />
   </div>
 );
 

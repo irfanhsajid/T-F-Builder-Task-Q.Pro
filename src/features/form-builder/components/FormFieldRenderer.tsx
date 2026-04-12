@@ -1,5 +1,6 @@
 import type { FormField } from "../types";
 import styles from "@/styles/FormBuilder.module.css";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 interface FormFieldRendererProps {
   field: FormField;
@@ -32,21 +33,20 @@ const FormFieldRenderer = ({ field, value, onChange }: FormFieldRendererProps) =
           rows={3}
         />
       );
-    case "select":
+    case "select": {
+      const opts = (field.options ?? []).map((opt, i) => ({
+        value: opt || `option-${i}`,
+        label: opt || `Option ${i + 1}`,
+      }));
       return (
-        <select
-          className={styles.select}
+        <CustomSelect
+          options={opts}
           value={(value as string) ?? ""}
-          onChange={(e) => onChange(e.target.value)}
-        >
-          <option value="">Select {field.label.toLowerCase()}</option>
-          {(field.options ?? []).map((opt, i) => (
-            <option key={i} value={opt || `option-${i}`}>
-              {opt || `Option ${i + 1}`}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => onChange(v)}
+          placeholder={`Select ${field.label.toLowerCase()}`}
+        />
       );
+    }
     case "radio":
       return (
         <div className={styles.radioGroup}>

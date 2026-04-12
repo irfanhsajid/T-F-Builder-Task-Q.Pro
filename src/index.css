@@ -29,6 +29,8 @@
   --radius-sm: 6px;
   --radius: 10px;
   --radius-lg: 14px;
+  /* Single-line text inputs, custom selects, and matching controls */
+  --control-min-height: 2.625rem;
   --font:
     "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
