@@ -14,7 +14,7 @@ import styles from "@/styles/Todo.module.css";
 const TodoListContainer = () => {
   const { todos, isLoading: todosLoading, isError: todosError } = useTodos();
   const { users, userMap, isLoading: usersLoading, isError: usersError } = useUsers();
-  const { filters, setFilters } = useTodoFilters();
+  const { filters, setFilters, resetFilters } = useTodoFilters();
   const { filtered, paginated, page, totalPages, pageSize } = useFilteredTodos(todos, filters);
 
   const isLoading = todosLoading || usersLoading;
@@ -35,7 +35,12 @@ const TodoListContainer = () => {
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Todo List</h1>
-      <TodoFilters filters={filters} users={users} onFilterChange={setFilters} />
+      <TodoFilters
+        filters={filters}
+        users={users}
+        onFilterChange={setFilters}
+        onResetFilters={resetFilters}
+      />
       <TodoTable todos={paginated} userMap={userMap} />
       <TodoPagination
         page={page}

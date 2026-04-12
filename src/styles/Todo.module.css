@@ -46,7 +46,7 @@
 
 .filters {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
@@ -54,12 +54,24 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  /* overflow must stay visible so CustomSelect listboxes are not clipped */
+  overflow: visible;
+}
+
+.filtersMain {
+  display: flex;
+  flex: 1;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
 .searchWrap {
   position: relative;
-  flex: 1;
-  min-width: 200px;
+  flex: 5 1 0;
+  min-width: 0;
 }
 
 .searchIcon {
@@ -95,15 +107,38 @@
 }
 
 .filterSelectWrap {
-  width: 180px;
-  max-width: 100%;
-  flex-shrink: 0;
+  flex: 3 1 0;
+  min-width: 0;
 }
 
 .filterSelectNarrowWrap {
-  width: 160px;
-  max-width: 100%;
+  flex: 2 1 0;
+  min-width: 0;
+}
+
+.filterReset {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   flex-shrink: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.filterReset:hover {
+  border-color: var(--danger);
+  background: var(--danger-light);
+  color: var(--danger);
 }
 
 .tableWrap {

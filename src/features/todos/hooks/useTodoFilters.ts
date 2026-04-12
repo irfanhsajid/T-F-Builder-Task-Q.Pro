@@ -26,5 +26,14 @@ export const useTodoFilters = () => {
     });
   }, []);
 
-  return { filters, setFilters };
+  const resetFilters = useCallback(() => {
+    setFiltersState(defaultFilters);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultFilters));
+    } catch {
+      /* ignore quota / private mode */
+    }
+  }, []);
+
+  return { filters, setFilters, resetFilters };
 };
