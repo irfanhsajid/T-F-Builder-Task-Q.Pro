@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { TodoFilters, TodoPageSize } from "../types";
+import type { TodoFilters, TodoPageSize } from "@/types/todos";
 
 const STORAGE_KEY = "todo-filters";
 

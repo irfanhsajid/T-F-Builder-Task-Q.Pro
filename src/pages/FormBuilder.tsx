@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { Plus, Eye, Save } from "lucide-react";
-import { useFormBuilder } from "./hooks/useFormBuilder";
-import FieldEditor from "./components/FieldEditor";
+import { useFormBuilder } from "@/hooks/useFormBuilder";
+import FieldEditor from "@/components/features/form-builder/FieldEditor";
 import styles from "@/styles/FormBuilder.module.css";
 
-const FormBuilderContainer = () => {
+const FormBuilderPageContainer = () => {
   const navigate = useNavigate();
   const {
     fields,
@@ -69,4 +69,4 @@ const FormBuilderContainer = () => {
   );
 };
 
-export default FormBuilderContainer;
+export default FormBuilderPageContainer;

@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send } from "lucide-react";
-import type { FormField } from "./types";
-import { loadFormConfig } from "./utils/storage";
+import type { FormField } from "@/types/form-builder";
+import { loadFormConfig } from "@/lib/utils";
 import {
   INVALID_EMAIL_MSG,
   INVALID_PHONE_MSG,
   isValidEmail,
   isValidPhone,
-} from "./utils/validation";
-import FormFieldRenderer from "./components/FormFieldRenderer";
-import FormSubmitResult from "./components/FormSubmitResult";
+} from "@/lib/utils";
+import FormFieldRenderer from "@/components/features/form-builder/FormFieldRenderer";
+import FormSubmitResult from "@/components/features/form-builder/FormSubmitResult";
 import styles from "@/styles/FormBuilder.module.css";
 
 const REQUIRED_MSG = "This field is required";
@@ -41,7 +41,7 @@ function buildInitialValues(
   return init;
 }
 
-const FormPreviewContainer = () => {
+const FormPreviewPageContainer = () => {
   const navigate = useNavigate();
   const [fields] = useState<FormField[]>(() => {
     const config = loadFormConfig();
@@ -180,4 +180,4 @@ const FormPreviewContainer = () => {
   );
 };
 
-export default FormPreviewContainer;
+export default FormPreviewPageContainer;

@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
-import { useTodos, useUsers } from "./hooks/useTodos";
-import { useTodoFilters } from "./hooks/useTodoFilters";
-import TodoFilters from "./components/TodoFilters";
-import TodoTable from "./components/TodoTable";
-import TodoTableSkeleton from "./components/TodoTableSkeleton";
-import TodoPagination from "./components/TodoPagination";
-import type { TodoPageSize } from "./types";
+import { useTodos, useUsers } from "@/hooks/useTodos";
+import { useTodoFilters } from "@/hooks/useTodoFilters";
+import TodoFilters from "@/components/features/todos/TodoFilters";
+import TodoTable from "@/components/features/todos/TodoTable";
+import TodoTableSkeleton from "@/components/features/todos/TodoTableSkeleton";
+import TodoPagination from "@/components/features/todos/TodoPagination";
+import type { TodoPageSize } from "@/types/todos";
 import styles from "@/styles/Todo.module.css";
 
 function effectiveLimit(pageSize: TodoPageSize): number {
@@ -15,7 +15,7 @@ function effectiveLimit(pageSize: TodoPageSize): number {
 /**
  * Container: server-side pagination & filters via JSONPlaceholder query params.
  */
-const TodoListContainer = () => {
+const TodoListPageContainer = () => {
   const { filters, setFilters, resetFilters } = useTodoFilters();
   const {
     todos,
@@ -24,7 +24,12 @@ const TodoListContainer = () => {
     isFetching: todosFetching,
     isError: todosError,
   } = useTodos(filters);
-  const { users, userMap, isLoading: usersLoading, isError: usersError } = useUsers();
+  const {
+    users,
+    userMap,
+    isLoading: usersLoading,
+    isError: usersError,
+  } = useUsers();
 
   const limit = effectiveLimit(filters.pageSize);
   const totalPages = useMemo(() => {
@@ -55,7 +60,9 @@ const TodoListContainer = () => {
   }
 
   if (isError) {
-    return <div className={styles.error}>Failed to load data. Please try again.</div>;
+    return (
+      <div className={styles.error}>Failed to load data. Please try again.</div>
+    );
   }
 
   return (
@@ -86,4 +93,4 @@ const TodoListContainer = () => {
   );
 };
 
-export default TodoListContainer;
+export default TodoListPageContainer;

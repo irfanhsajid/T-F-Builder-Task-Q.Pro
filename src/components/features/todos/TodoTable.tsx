@@ -1,5 +1,5 @@
 import { CheckCircle2, Clock } from "lucide-react";
-import type { Todo } from "../types";
+import type { Todo } from "@/types/todos";
 import styles from "@/styles/Todo.module.css";
 import { TodoTableSkeletonBody } from "./TodoTableSkeleton";
 
@@ -70,7 +70,11 @@ const TodoTable = ({
                         aria-hidden
                       />
                     ) : (
-                      <Clock className={styles.badgeIcon} size={14} aria-hidden />
+                      <Clock
+                        className={styles.badgeIcon}
+                        size={14}
+                        aria-hidden
+                      />
                     )}
                     {todo.completed ? "Completed" : "Pending"}
                   </span>

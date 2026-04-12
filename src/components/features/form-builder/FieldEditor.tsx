@@ -1,5 +1,5 @@
 import { Trash2, GripVertical, Plus } from "lucide-react";
-import type { FormField, FieldType } from "../types";
+import type { FormField, FieldType } from "@/types/form-builder";
 import styles from "@/styles/FormBuilder.module.css";
 import CustomSelect from "@/components/ui/CustomSelect";
 
@@ -105,8 +105,7 @@ const FieldEditor = ({
             value={field.placeholder ?? ""}
             onChange={(e) =>
               onUpdate(field.id, {
-                placeholder:
-                  e.target.value === "" ? undefined : e.target.value,
+                placeholder: e.target.value === "" ? undefined : e.target.value,
               })
             }
           />

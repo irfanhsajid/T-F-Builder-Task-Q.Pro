@@ -3,7 +3,7 @@
  * All external API calls are centralized here.
  */
 
-import type { Todo, User } from "@/features/todos/types";
+import type { Todo, User } from "@/types/todos";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com";
 

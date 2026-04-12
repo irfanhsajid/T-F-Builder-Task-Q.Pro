@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { TodoPageSize } from "../types";
+import type { TodoPageSize } from "@/types/todos";
 import styles from "@/styles/Todo.module.css";
 import CustomSelect from "@/components/ui/CustomSelect";
 

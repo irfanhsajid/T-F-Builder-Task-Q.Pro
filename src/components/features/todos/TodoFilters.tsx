@@ -1,5 +1,5 @@
 import { Search, Undo } from "lucide-react";
-import type { User, TodoFilters as Filters } from "../types";
+import type { User, TodoFilters as Filters } from "@/types/todos";
 import styles from "@/styles/Todo.module.css";
 import CustomSelect from "@/components/ui/CustomSelect";
 

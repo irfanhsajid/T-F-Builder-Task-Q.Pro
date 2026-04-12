@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
-import type { FormField, FieldType } from "../types";
-import { saveFormConfig, loadFormConfig } from "../utils/storage";
+import type { FormField, FieldType } from "@/types/form-builder";
+import { saveFormConfig, loadFormConfig } from "@/lib/utils";
 
 const createField = (): FormField => ({
   id: crypto.randomUUID(),
@@ -11,7 +11,8 @@ const createField = (): FormField => ({
   options: [],
 });
 
-const needsOptions = (type: FieldType): boolean => type === "select" || type === "radio";
+const needsOptions = (type: FieldType): boolean =>
+  type === "select" || type === "radio";
 
 export const useFormBuilder = () => {
   const [fields, setFields] = useState<FormField[]>(() => {
@@ -28,29 +29,36 @@ export const useFormBuilder = () => {
   }, []);
 
   const updateField = useCallback((id: string, update: Partial<FormField>) => {
-    setFields((prev) => prev.map((f) => (f.id === id ? { ...f, ...update } : f)));
+    setFields((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, ...update } : f)),
+    );
   }, []);
 
-  const changeFieldType = useCallback((id: string, type: FieldType, currentOptions?: string[]) => {
-    const options = needsOptions(type)
-      ? (currentOptions?.length ? currentOptions : ["Option 1"])
-      : [];
-    const patch: Partial<FormField> = { type, options };
-    if (type === "range") {
-      patch.min = 0;
-      patch.max = 100;
-      patch.step = 1;
-      patch.accept = undefined;
-    } else {
-      patch.min = undefined;
-      patch.max = undefined;
-      patch.step = undefined;
-    }
-    if (type !== "file") {
-      patch.accept = undefined;
-    }
-    updateField(id, patch);
-  }, [updateField]);
+  const changeFieldType = useCallback(
+    (id: string, type: FieldType, currentOptions?: string[]) => {
+      const options = needsOptions(type)
+        ? currentOptions?.length
+          ? currentOptions
+          : ["Option 1"]
+        : [];
+      const patch: Partial<FormField> = { type, options };
+      if (type === "range") {
+        patch.min = 0;
+        patch.max = 100;
+        patch.step = 1;
+        patch.accept = undefined;
+      } else {
+        patch.min = undefined;
+        patch.max = undefined;
+        patch.step = undefined;
+      }
+      if (type !== "file") {
+        patch.accept = undefined;
+      }
+      updateField(id, patch);
+    },
+    [updateField],
+  );
 
   const save = useCallback((): boolean => {
     const valid = fields.every((f) => f.label.trim());

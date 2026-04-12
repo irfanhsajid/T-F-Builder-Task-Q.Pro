@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
-import type { TodoFilters, User } from "../types";
+import type { TodoFilters, User } from "@/types/todos";
 
 const ALL_ROWS_LIMIT = 200;
 
@@ -12,9 +12,7 @@ function apiPage(filters: TodoFilters): number {
   return filters.pageSize === "all" ? 1 : filters.page;
 }
 
-function statusForApi(
-  status: string,
-): "completed" | "pending" | undefined {
+function statusForApi(status: string): "completed" | "pending" | undefined {
   if (status === "completed" || status === "pending") return status;
   return undefined;
 }
