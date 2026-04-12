@@ -12,6 +12,9 @@ const FIELD_TYPES: { value: FieldType; label: string }[] = [
   { value: "radio", label: "Radio Buttons" },
   { value: "checkbox", label: "Checkbox" },
   { value: "date", label: "Date" },
+  { value: "time", label: "Time" },
+  { value: "range", label: "Range Slider" },
+  { value: "file", label: "File Upload" },
 ];
 
 interface FieldEditorProps {
@@ -87,6 +90,75 @@ const FieldEditor = ({
         Required
       </label>
     </div>
+
+    {field.type === "range" && (
+      <div className={styles.rangeSettings}>
+        <span className={styles.label}>Slider range</span>
+        <div className={styles.rangeSettingsGrid}>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor={`min-${field.id}`}>
+              Min
+            </label>
+            <input
+              id={`min-${field.id}`}
+              type="number"
+              className={styles.input}
+              value={field.min ?? 0}
+              onChange={(e) =>
+                onUpdate(field.id, { min: Number(e.target.value) || 0 })
+              }
+            />
+          </div>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor={`max-${field.id}`}>
+              Max
+            </label>
+            <input
+              id={`max-${field.id}`}
+              type="number"
+              className={styles.input}
+              value={field.max ?? 100}
+              onChange={(e) =>
+                onUpdate(field.id, { max: Number(e.target.value) || 100 })
+              }
+            />
+          </div>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor={`step-${field.id}`}>
+              Step
+            </label>
+            <input
+              id={`step-${field.id}`}
+              type="number"
+              className={styles.input}
+              min={0.0001}
+              step="any"
+              value={field.step ?? 1}
+              onChange={(e) =>
+                onUpdate(field.id, {
+                  step: Math.max(Number(e.target.value) || 1, 0.0001),
+                })
+              }
+            />
+          </div>
+        </div>
+      </div>
+    )}
+
+    {field.type === "file" && (
+      <div className={styles.fieldGroup}>
+        <label className={styles.label} htmlFor={`accept-${field.id}`}>
+          Accepted types (optional)
+        </label>
+        <input
+          id={`accept-${field.id}`}
+          className={styles.input}
+          placeholder="e.g. image/* or .pdf,.doc"
+          value={field.accept ?? ""}
+          onChange={(e) => onUpdate(field.id, { accept: e.target.value || undefined })}
+        />
+      </div>
+    )}
 
     {needsOptions(field.type) && (
       <div className={styles.optionsBlock}>

@@ -319,3 +319,74 @@
   font-size: 0.875rem;
   color: var(--text-primary);
 }
+
+.inputError,
+.textarea.inputError {
+  border-color: var(--danger);
+}
+
+.inputError:focus,
+.textarea.inputError:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
+.fieldErrorText {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--danger);
+  line-height: 1.35;
+}
+
+.rangeSettings {
+  margin-top: 0.75rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--primary-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rangeSettingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  gap: 0.75rem;
+}
+
+.rangeRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rangeTrack {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.rangeInput {
+  flex: 1;
+  min-width: 8rem;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.rangeInput.inputError {
+  outline: 2px solid var(--danger);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.rangeValue {
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  min-width: 2.5rem;
+}
+
+.fileInput {
+  padding: 0.45rem 0.5rem;
+  cursor: pointer;
+}

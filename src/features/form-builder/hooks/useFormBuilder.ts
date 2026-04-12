@@ -35,7 +35,21 @@ export const useFormBuilder = () => {
     const options = needsOptions(type)
       ? (currentOptions?.length ? currentOptions : ["Option 1"])
       : [];
-    updateField(id, { type, options });
+    const patch: Partial<FormField> = { type, options };
+    if (type === "range") {
+      patch.min = 0;
+      patch.max = 100;
+      patch.step = 1;
+      patch.accept = undefined;
+    } else {
+      patch.min = undefined;
+      patch.max = undefined;
+      patch.step = undefined;
+    }
+    if (type !== "file") {
+      patch.accept = undefined;
+    }
+    updateField(id, patch);
   }, [updateField]);
 
   const save = useCallback((): boolean => {

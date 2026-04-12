@@ -7,35 +7,65 @@ import { loadFormConfig } from "./utils/storage";
 import FormFieldRenderer from "./components/FormFieldRenderer";
 import styles from "@/styles/FormBuilder.module.css";
 
+const REQUIRED_MSG = "This field is required";
+
+function isRequiredFieldEmpty(
+  field: FormField,
+  val: string | boolean | undefined,
+): boolean {
+  if (!field.required) return false;
+  if (field.type === "checkbox") {
+    return val !== true;
+  }
+  if (field.type === "range") {
+    return val === undefined || val === "";
+  }
+  return val === undefined || val === false || String(val).trim() === "";
+}
+
+function buildInitialValues(formFields: FormField[]): Record<string, string | boolean> {
+  const init: Record<string, string | boolean> = {};
+  for (const f of formFields) {
+    if (f.type === "checkbox") init[f.id] = false;
+    else if (f.type === "range") init[f.id] = String(f.min ?? 0);
+    else init[f.id] = "";
+  }
+  return init;
+}
+
 const FormPreviewContainer = () => {
   const navigate = useNavigate();
   const [fields] = useState<FormField[]>(() => {
     const config = loadFormConfig();
     return config?.fields.length ? config.fields : [];
   });
-  const [values, setValues] = useState<Record<string, string | boolean>>({});
+  const [values, setValues] = useState<Record<string, string | boolean>>(() => {
+    const config = loadFormConfig();
+    const fs = config?.fields ?? [];
+    return fs.length ? buildInitialValues(fs) : {};
+  });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const setValue = (id: string, value: string | boolean) => {
     setValues((prev) => ({ ...prev, [id]: value }));
+    setFieldErrors((prev) => {
+      if (!prev[id]) return prev;
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
-
-  const isFormValid = fields.every((f) => {
-    if (!f.required) return true;
-    const val = values[f.id];
-    return val !== undefined && val !== "" && val !== false;
-  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid) {
-      const missing = fields.find(
-        (f) =>
-          f.required &&
-          (values[f.id] === undefined ||
-            values[f.id] === "" ||
-            values[f.id] === false),
-      );
-      if (missing) toast.error(`"${missing.label}" is required.`);
+    const next: Record<string, string> = {};
+    for (const f of fields) {
+      if (isRequiredFieldEmpty(f, values[f.id])) {
+        next[f.id] = REQUIRED_MSG;
+      }
+    }
+    setFieldErrors(next);
+    if (Object.keys(next).length > 0) {
       return;
     }
 
@@ -79,7 +109,7 @@ const FormPreviewContainer = () => {
         </button>
       </div>
 
-      <form className={styles.previewForm} onSubmit={handleSubmit}>
+      <form className={styles.previewForm} onSubmit={handleSubmit} noValidate>
         {fields.map((field) => (
           <div key={field.id} className={styles.fieldBlock}>
             {field.type !== "checkbox" && (
@@ -96,6 +126,7 @@ const FormPreviewContainer = () => {
                 values[field.id] ?? (field.type === "checkbox" ? false : "")
               }
               onChange={(v) => setValue(field.id, v)}
+              error={fieldErrors[field.id]}
             />
           </div>
         ))}
@@ -103,7 +134,6 @@ const FormPreviewContainer = () => {
         <button
           type="submit"
           className={`${styles.btn} ${styles.btnPrimary} ${styles.btnBlock}`}
-          disabled={!isFormValid}
         >
           <Send size={16} /> Submit
         </button>
