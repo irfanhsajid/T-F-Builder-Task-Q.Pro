@@ -29,7 +29,11 @@ const FormPreviewContainer = () => {
     e.preventDefault();
     if (!isFormValid) {
       const missing = fields.find(
-        (f) => f.required && (values[f.id] === undefined || values[f.id] === "" || values[f.id] === false),
+        (f) =>
+          f.required &&
+          (values[f.id] === undefined ||
+            values[f.id] === "" ||
+            values[f.id] === false),
       );
       if (missing) toast.error(`"${missing.label}" is required.`);
       return;
@@ -49,7 +53,11 @@ const FormPreviewContainer = () => {
       <div className={`${styles.page} ${styles.pageWide}`}>
         <div className={styles.emptyState}>
           <p>No form has been created yet.</p>
-          <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => navigate("/form-builder")}>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnPrimary}`}
+            onClick={() => navigate("/form-builder")}
+          >
             <ArrowLeft size={16} /> Go to Form Builder
           </button>
         </div>
@@ -60,15 +68,15 @@ const FormPreviewContainer = () => {
   return (
     <div className={`${styles.page} ${styles.pageWide}`}>
       <div className={styles.previewHeader}>
+        <h1 className={styles.title}>Form Preview</h1>
         <button
           type="button"
-          className={`${styles.btn} ${styles.btnGhost} ${styles.btnIcon}`}
+          className={`${styles.btn} ${styles.btnOutline}`}
           onClick={() => navigate("/form-builder")}
           aria-label="Back to builder"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={16} /> Back to Builder
         </button>
-        <h1 className={styles.title}>Form Preview</h1>
       </div>
 
       <form className={styles.previewForm} onSubmit={handleSubmit}>
@@ -77,18 +85,26 @@ const FormPreviewContainer = () => {
             {field.type !== "checkbox" && (
               <label className={styles.labelInline}>
                 {field.label}
-                {field.required && <span className={styles.requiredMark}>*</span>}
+                {field.required && (
+                  <span className={styles.requiredMark}>*</span>
+                )}
               </label>
             )}
             <FormFieldRenderer
               field={field}
-              value={values[field.id] ?? (field.type === "checkbox" ? false : "")}
+              value={
+                values[field.id] ?? (field.type === "checkbox" ? false : "")
+              }
               onChange={(v) => setValue(field.id, v)}
             />
           </div>
         ))}
 
-        <button type="submit" className={`${styles.btn} ${styles.btnPrimary} ${styles.btnBlock}`} disabled={!isFormValid}>
+        <button
+          type="submit"
+          className={`${styles.btn} ${styles.btnPrimary} ${styles.btnBlock}`}
+          disabled={!isFormValid}
+        >
           <Send size={16} /> Submit
         </button>
       </form>

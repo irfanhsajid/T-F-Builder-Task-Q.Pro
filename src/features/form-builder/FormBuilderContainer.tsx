@@ -6,7 +6,15 @@ import styles from "@/styles/FormBuilder.module.css";
 
 const FormBuilderContainer = () => {
   const navigate = useNavigate();
-  const { fields, addField, removeField, updateField, changeFieldType, save, needsOptions } = useFormBuilder();
+  const {
+    fields,
+    addField,
+    removeField,
+    updateField,
+    changeFieldType,
+    save,
+    needsOptions,
+  } = useFormBuilder();
 
   const handlePreview = () => {
     if (save()) navigate("/form-preview");
@@ -17,11 +25,19 @@ const FormBuilderContainer = () => {
       <div className={styles.header}>
         <h1 className={styles.title}>Form Builder</h1>
         <div className={styles.actions}>
-          <button type="button" className={`${styles.btn} ${styles.btnOutline}`} onClick={() => save()}>
-            <Save size={16} /> Save
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnOutline}`}
+            onClick={() => save()}
+          >
+            <Save size={16} /> Save Form
           </button>
-          <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={handlePreview}>
-            <Eye size={16} /> Preview
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnPrimary}`}
+            onClick={handlePreview}
+          >
+            <Eye size={16} /> Preview Form
           </button>
         </div>
       </div>
@@ -41,8 +57,12 @@ const FormBuilderContainer = () => {
         ))}
       </div>
 
-      <button type="button" className={`${styles.btn} ${styles.btnOutline} ${styles.addFieldBtn}`} onClick={addField}>
-        <Plus size={16} /> Add Field
+      <button
+        type="button"
+        className={`${styles.btn} ${styles.btnOutline} ${styles.addFieldBtn}`}
+        onClick={addField}
+      >
+        <Plus size={16} /> Add Another Field
       </button>
     </div>
   );

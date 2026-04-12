@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { CheckSquare, PenTool, Eye } from "lucide-react";
 import layout from "@/styles/Layout.module.css";
 
@@ -13,14 +13,18 @@ const AppLayout = () => {
     <div className={layout.shell}>
       <nav className={layout.nav}>
         <div className={layout.navInner}>
-          <span className={layout.brand}>Q Pro - Assessment</span>
+          <Link to="/todos">
+            <span className={layout.brand}>Q Pro - Assessment</span>
+          </Link>
           <div className={layout.navLinks}>
             {navItems.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  isActive ? `${layout.navLink} ${layout.navLinkActive}` : layout.navLink
+                  isActive
+                    ? `${layout.navLink} ${layout.navLinkActive}`
+                    : layout.navLink
                 }
               >
                 <Icon size={16} />

@@ -12,7 +12,7 @@ const TodoTable = ({ todos, userMap }: TodoTableProps) => (
       <thead>
         <tr>
           <th>Title</th>
-          <th>User</th>
+          <th>Assigned To</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -26,10 +26,25 @@ const TodoTable = ({ todos, userMap }: TodoTableProps) => (
         ) : (
           todos.map((todo) => (
             <tr key={todo.id}>
-              <td>{todo.title}</td>
-              <td className={styles.muted}>{userMap.get(todo.userId) ?? "Unknown"}</td>
+              <td
+                style={{
+                  textDecoration: todo.completed ? "line-through" : "none",
+                  color: todo.completed
+                    ? "var(--text-secondary)"
+                    : "var(--text-primary)",
+                }}
+              >
+                {todo.title}
+              </td>
+              <td className={styles.muted}>
+                {userMap.get(todo.userId) ?? "Unknown"}
+              </td>
               <td>
-                <span className={todo.completed ? styles.badgeSuccess : styles.badgeMuted}>
+                <span
+                  className={
+                    todo.completed ? styles.badgeSuccess : styles.badgeMuted
+                  }
+                >
                   {todo.completed ? "Completed" : "Pending"}
                 </span>
               </td>

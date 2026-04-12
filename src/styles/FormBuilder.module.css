@@ -1,5 +1,4 @@
 .page {
-  max-width: 48rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -8,7 +7,7 @@
 }
 
 .pageWide {
-  max-width: 42rem;
+  /* max-width: 42rem; */
 }
 
 @keyframes fadeIn {
@@ -133,6 +132,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .checkbox {
@@ -145,7 +145,7 @@
 .optionsBlock {
   margin-top: 0.5rem;
   padding-left: 1rem;
-  border-left: 3px solid rgba(79, 70, 229, 0.25);
+  border-left: 2px solid var(--primary-light);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -252,14 +252,15 @@
 .addFieldBtn {
   width: 100%;
   border-style: dashed;
-  background: var(--surface);
-  border-color: var(--border);
+  background: var(--primary-light);
+  border-color: var(--primary);
   color: var(--text-primary);
 }
 
 .addFieldBtn:hover:not(:disabled) {
-  border-color: var(--text-muted);
-  background: rgba(148, 163, 184, 0.08);
+  border-color: var(--primary-hover);
+  color: #fff;
+  background: var(--primary);
 }
 
 .btn:disabled {
@@ -271,6 +272,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  justify-content: space-between;
 }
 
 .previewForm {

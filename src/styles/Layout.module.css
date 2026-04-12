@@ -24,10 +24,12 @@
 }
 
 .brand {
-  font-size: 1.125rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+  color: var(--primary);
+  letter-spacing: -0.05em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  text-decoration-color: var(--primary-light);
 }
 
 .navLinks {
@@ -57,13 +59,13 @@
 }
 
 .navLinkActive {
-  background: var(--primary);
-  color: #fff !important;
+  color: var(--primary);
+  /* background: var(--primary-light); */
 }
 
 .navLinkActive:hover {
-  background: var(--primary-hover);
-  color: #fff !important;
+  background: var(--primary-light);
+  color: var(--primary) !important;
 }
 
 .main {
