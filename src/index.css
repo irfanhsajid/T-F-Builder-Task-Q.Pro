@@ -76,6 +76,7 @@ button {
   cursor: pointer;
   font-family: var(--font);
   touch-action: manipulation;
+  min-height: var(--control-min-height);
 }
 
 input,

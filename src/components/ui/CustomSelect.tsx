@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useId, KeyboardEvent } from "react";
 import styles from "../../styles/CustomSelect.module.css";
+import { Check } from "lucide-react";
 
 export interface SelectOption {
   value: string;
@@ -96,7 +97,8 @@ export default function CustomSelect({
     if (!isControlled) setInternalValue(opt.value);
     onChange?.(opt.value);
     setOpen(false);
-    triggerRef.current?.focus();
+    /* Blur so :focus doesn’t keep the “active” ring like a text field would after leaving */
+    triggerRef.current?.blur();
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
@@ -140,7 +142,6 @@ export default function CustomSelect({
       case "Escape":
         e.preventDefault();
         setOpen(false);
-        triggerRef.current?.focus();
         break;
       case "Tab":
         setOpen(false);
@@ -345,22 +346,10 @@ function ChevronIcon({ open }: { open: boolean }) {
 
 function CheckIcon({ visible }: { visible: boolean }) {
   return (
-    <svg
+    <Check
       className={styles.checkIcon}
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-      style={{ opacity: visible ? 1 : 0 }}
-    >
-      <path
-        d="M2.5 7l3.5 3.5 5.5-6"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+      size={16}
+      style={{ opacity: visible ? 1 : 0, marginLeft: "auto" }}
+    />
   );
 }

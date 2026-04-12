@@ -1,7 +1,6 @@
 /* CustomSelect — aligned with :root tokens and .input / native select in index.css */
 
 .wrapper {
-  --sel-focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.14);
   --sel-bg-hover: rgba(148, 163, 184, 0.1);
   --sel-bg-active: rgba(148, 163, 184, 0.16);
   --sel-listbox-shadow: var(--shadow-lg);
@@ -54,15 +53,24 @@
   white-space: nowrap;
 }
 
-.trigger:hover:not(:disabled) {
+/*
+ * Hover — don’t override keyboard focus ring or the “open” state (see aria-expanded).
+ * Without :not([aria-expanded="true"]), hover could beat .triggerOpen on specificity.
+ */
+.trigger:hover:not(:disabled):not(:focus-visible):not([aria-expanded="true"]) {
   border-color: var(--text-muted);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
 }
 
+.trigger:focus {
+  outline: none;
+}
+
+/* Open (mouse or keyboard) or keyboard focus — same ring as inputs */
 .trigger:focus-visible,
 .triggerOpen {
   border-color: var(--primary);
-  box-shadow: var(--sel-focus-ring);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
 }
 
 .triggerError {
@@ -167,10 +175,7 @@
 .optionSelected {
   font-weight: 500;
   color: var(--primary);
-}
-
-.optionSelected.optionActive {
-  background: var(--sel-bg-active);
+  background: var(--primary-light);
 }
 
 .optionDisabled {
