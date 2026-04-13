@@ -1,4 +1,4 @@
-import type { FormField } from "../types";
+import type { FormField } from "@/types/form-builder";
 import styles from "@/styles/FormBuilder.module.css";
 import CustomSelect from "@/components/ui/CustomSelect";
 
@@ -14,7 +14,12 @@ function resolvePlaceholder(field: FormField, fallback: string): string {
   return p ? p : fallback;
 }
 
-const FormFieldRenderer = ({ field, value, onChange, error }: FormFieldRendererProps) => {
+const FormFieldRenderer = ({
+  field,
+  value,
+  onChange,
+  error,
+}: FormFieldRendererProps) => {
   const errClass = error ? styles.inputError : "";
   const errText = error ? (
     <p className={styles.fieldErrorText} role="alert">
@@ -107,7 +112,11 @@ const FormFieldRenderer = ({ field, value, onChange, error }: FormFieldRendererP
             })}
           </div>
           {error ? (
-            <p id={`err-${field.id}`} className={styles.fieldErrorText} role="alert">
+            <p
+              id={`err-${field.id}`}
+              className={styles.fieldErrorText}
+              role="alert"
+            >
               {error}
             </p>
           ) : null}

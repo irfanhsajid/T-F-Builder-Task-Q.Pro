@@ -88,6 +88,10 @@
   color: var(--text-muted);
 }
 
+.searchInput::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
 .filterSelectWrap {
   flex: 3 1 0;
   min-width: 0;

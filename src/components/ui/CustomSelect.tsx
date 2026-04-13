@@ -8,8 +8,8 @@ import {
   useId,
   KeyboardEvent,
 } from "react";
+import { Check, ChevronDown } from "lucide-react";
 import styles from "../../styles/CustomSelect.module.css";
-import { Check } from "lucide-react";
 
 export interface SelectOption {
   value: string;
@@ -33,17 +33,13 @@ export interface CustomSelectProps {
   hint?: string;
   error?: string;
   className?: string;
-  /** Where the listbox opens. `auto` picks above or below from available viewport space. */
   placement?: "auto" | "below" | "above";
 }
 
-function isGroup(item: SelectOption | SelectGroup): item is SelectGroup {
-  return "options" in item;
-}
-
-function flatOptions(options: (SelectOption | SelectGroup)[]): SelectOption[] {
-  return options.flatMap((o) => (isGroup(o) ? o.options : [o]));
-}
+const isGroup = (item: SelectOption | SelectGroup): item is SelectGroup =>
+  "options" in item;
+const flatOptions = (options: (SelectOption | SelectGroup)[]): SelectOption[] =>
+  options.flatMap((o) => (isGroup(o) ? o.options : [o]));
 
 export default function CustomSelect({
   options,
@@ -59,16 +55,14 @@ export default function CustomSelect({
   placement = "below",
 }: CustomSelectProps) {
   const id = useId();
-  const listboxId = `${id}-listbox`;
-
   const isControlled = controlledValue !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
   const value = isControlled ? controlledValue : internalValue;
-
   const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number>(-1);
-  const [autoPlacement, setAutoPlacement] = useState<"below" | "above">("below");
-
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [autoPlacement, setAutoPlacement] = useState<"below" | "above">(
+    "below",
+  );
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -76,7 +70,6 @@ export default function CustomSelect({
   const allFlat = flatOptions(options);
   const selectedOption = allFlat.find((o) => o.value === value);
 
-  /* ── close on outside click ── */
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
@@ -86,51 +79,40 @@ export default function CustomSelect({
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
-  /* ── flip listbox above trigger when there is not enough space below (e.g. page footer) ── */
   useLayoutEffect(() => {
-    if (!open || placement !== "auto") return;
-    const trigger = triggerRef.current;
-    if (!trigger) return;
-    const rect = trigger.getBoundingClientRect();
-    const gap = 6;
-    const rowH = 36;
-    const maxList = 260;
-    const estHeight = Math.min(maxList, allFlat.length * rowH + 16);
-    const margin = 12;
-    const spaceBelow = window.innerHeight - rect.bottom - gap - margin;
-    const spaceAbove = rect.top - gap - margin;
+    if (!open || placement !== "auto" || !triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const estHeight = Math.min(260, allFlat.length * 36 + 16);
+    const spaceBelow = window.innerHeight - rect.bottom - 18;
+    const spaceAbove = rect.top - 18;
     setAutoPlacement(
       spaceBelow >= estHeight || spaceBelow >= spaceAbove ? "below" : "above",
     );
   }, [open, placement, allFlat.length]);
 
-  /* ── scroll active item into view ── */
   useEffect(() => {
     if (!open || activeIndex < 0) return;
-    const el = listRef.current?.querySelector<HTMLElement>(
-      `[data-index="${activeIndex}"]`,
-    );
-    el?.scrollIntoView({ block: "nearest" });
+    listRef.current
+      ?.querySelector<HTMLElement>(`[data-index="${activeIndex}"]`)
+      ?.scrollIntoView({ block: "nearest" });
   }, [activeIndex, open]);
 
-  /* ── sync activeIndex when opening ── */
-  function handleOpen() {
+  const handleOpen = () => {
     if (disabled) return;
     const idx = allFlat.findIndex((o) => o.value === value);
     setActiveIndex(idx >= 0 ? idx : 0);
     setOpen(true);
-  }
+  };
 
-  function selectOption(opt: SelectOption) {
+  const selectOption = (opt: SelectOption) => {
     if (opt.disabled) return;
     if (!isControlled) setInternalValue(opt.value);
     onChange?.(opt.value);
     setOpen(false);
-    /* Blur so :focus doesn’t keep the “active” ring like a text field would after leaving */
     triggerRef.current?.blur();
-  }
+  };
 
-  function handleKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
     const enabledFlat = allFlat.filter((o) => !o.disabled);
 
     if (!open) {
@@ -142,7 +124,7 @@ export default function CustomSelect({
     }
 
     switch (e.key) {
-      case "ArrowDown": {
+      case "ArrowDown":
         e.preventDefault();
         setActiveIndex((prev) => {
           let next = prev + 1;
@@ -150,8 +132,7 @@ export default function CustomSelect({
           return next < allFlat.length ? next : prev;
         });
         break;
-      }
-      case "ArrowUp": {
+      case "ArrowUp":
         e.preventDefault();
         setActiveIndex((prev) => {
           let next = prev - 1;
@@ -159,15 +140,12 @@ export default function CustomSelect({
           return next >= 0 ? next : prev;
         });
         break;
-      }
       case "Enter":
-      case " ": {
+      case " ":
         e.preventDefault();
-        if (activeIndex >= 0 && !allFlat[activeIndex].disabled) {
+        if (activeIndex >= 0 && !allFlat[activeIndex].disabled)
           selectOption(allFlat[activeIndex]);
-        }
         break;
-      }
       case "Escape":
         e.preventDefault();
         setOpen(false);
@@ -190,13 +168,15 @@ export default function CustomSelect({
         );
         break;
     }
-  }
+  };
 
   const effectivePlacement =
-    placement === "above" ? "above" : placement === "below" ? "below" : autoPlacement;
-
-  /* ── render ── */
-  let flatIndex = -1; // tracks absolute index across groups
+    placement === "above"
+      ? "above"
+      : placement === "below"
+        ? "below"
+        : autoPlacement;
+  let flatIndex = -1;
 
   return (
     <div
@@ -217,7 +197,7 @@ export default function CustomSelect({
           role="combobox"
           aria-haspopup="listbox"
           aria-expanded={open}
-          aria-controls={listboxId}
+          aria-controls={`${id}-listbox`}
           aria-activedescendant={
             activeIndex >= 0 ? `${id}-opt-${activeIndex}` : undefined
           }
@@ -237,12 +217,18 @@ export default function CustomSelect({
           <span className={styles.triggerText}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
-          <ChevronIcon open={open} />
+          <ChevronDown
+            className={[styles.chevron, open && styles.chevronOpen]
+              .filter(Boolean)
+              .join(" ")}
+            size={16}
+            aria-hidden
+          />
         </button>
 
         {open && (
           <ul
-            id={listboxId}
+            id={`${id}-listbox`}
             ref={listRef}
             role="listbox"
             aria-label={label}
@@ -311,9 +297,7 @@ export default function CustomSelect({
     </div>
   );
 }
-
-/* ─── sub-components ─────────────────────────────────────────── */
-
+// select option item component
 function OptionItem({
   id,
   option,
@@ -347,46 +331,17 @@ function OptionItem({
         .filter(Boolean)
         .join(" ")}
       onMouseDown={(e) => {
-        e.preventDefault(); // keep focus on trigger
+        e.preventDefault();
         onSelect(option);
       }}
       onMouseEnter={!option.disabled ? onHover : undefined}
     >
       {option.label}
-      <CheckIcon visible={selected} />
-    </li>
-  );
-}
-
-function ChevronIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      className={[styles.chevron, open && styles.chevronOpen]
-        .filter(Boolean)
-        .join(" ")}
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M4 6l4 4 4-4"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      <Check
+        className={styles.checkIcon}
+        size={16}
+        style={{ opacity: selected ? 1 : 0, marginLeft: "auto" }}
       />
-    </svg>
-  );
-}
-
-function CheckIcon({ visible }: { visible: boolean }) {
-  return (
-    <Check
-      className={styles.checkIcon}
-      size={16}
-      style={{ opacity: visible ? 1 : 0, marginLeft: "auto" }}
-    />
+    </li>
   );
 }
