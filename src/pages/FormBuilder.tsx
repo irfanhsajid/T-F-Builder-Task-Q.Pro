@@ -1,10 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { Plus, Eye, Save } from "lucide-react";
 import { useFormBuilder } from "@/hooks/useFormBuilder";
+import usePageMetadata from "@/hooks/usePageMetadata";
 import FieldEditor from "@/components/features/form-builder/FieldEditor";
 import styles from "@/styles/FormBuilder.module.css";
 
+const PAGE_DESCRIPTION =
+  "Create and configure dynamic form fields, then save your form setup.";
+
 const FormBuilderPageContainer = () => {
+  usePageMetadata({
+    title: "Form Builder | Todo & Form Builder",
+    description: PAGE_DESCRIPTION,
+  });
+
   const navigate = useNavigate();
   const {
     fields,
@@ -23,7 +32,10 @@ const FormBuilderPageContainer = () => {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Form Builder</h1>
+        <div className={styles.titleGroup}>
+          <h1 className={styles.title}>Form Builder</h1>
+          <p className={styles.pageDescription}>{PAGE_DESCRIPTION}</p>
+        </div>
         <div className={styles.actions}>
           <button
             type="button"

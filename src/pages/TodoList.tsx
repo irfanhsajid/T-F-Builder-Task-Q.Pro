@@ -5,12 +5,21 @@ import TodoFilters from "@/components/features/todos/TodoFilters";
 import TodoTable from "@/components/features/todos/TodoTable";
 import TodoTableSkeleton from "@/components/features/todos/TodoTableSkeleton";
 import TodoPagination from "@/components/features/todos/TodoPagination";
+import usePageMetadata from "@/hooks/usePageMetadata";
 import styles from "@/styles/Todo.module.css";
 
 /**
  * Container: server-side pagination & filters via JSONPlaceholder query params.
  */
+const PAGE_DESCRIPTION =
+  "Browse and filter paginated todos with user and completion filters.";
+
 const TodoListPageContainer = () => {
+  usePageMetadata({
+    title: "Todos | Todo & Form Builder",
+    description: PAGE_DESCRIPTION,
+  });
+
   const { filters, setFilters, resetFilters } = useTodoFilters();
   const {
     todos,
@@ -48,6 +57,7 @@ const TodoListPageContainer = () => {
     return (
       <div className={styles.page}>
         <h1 className={styles.title}>Todo List</h1>
+        <p className={styles.pageDescription}>{PAGE_DESCRIPTION}</p>
         <TodoTableSkeleton rows={skeletonRows} />
       </div>
     );
@@ -62,6 +72,7 @@ const TodoListPageContainer = () => {
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Todo List</h1>
+      <p className={styles.pageDescription}>{PAGE_DESCRIPTION}</p>
       <TodoFilters
         filters={filters}
         users={users}

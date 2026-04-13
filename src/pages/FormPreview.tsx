@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send } from "lucide-react";
 import type { FormField } from "@/types/form-builder";
 import { loadFormConfig } from "@/lib/utils";
+import usePageMetadata from "@/hooks/usePageMetadata";
 import {
   INVALID_EMAIL_MSG,
   INVALID_PHONE_MSG,
@@ -14,6 +15,8 @@ import FormSubmitResult from "@/components/features/form-builder/FormSubmitResul
 import styles from "@/styles/FormBuilder.module.css";
 
 const REQUIRED_MSG = "This field is required";
+const PAGE_DESCRIPTION =
+  "Preview and submit the saved dynamic form with built-in validation.";
 
 function isRequiredFieldEmpty(
   field: FormField,
@@ -42,6 +45,11 @@ function buildInitialValues(
 }
 
 const FormPreviewPageContainer = () => {
+  usePageMetadata({
+    title: "Form Preview | Todo & Form Builder",
+    description: PAGE_DESCRIPTION,
+  });
+
   const navigate = useNavigate();
   const [fields] = useState<FormField[]>(() => {
     const config = loadFormConfig();
@@ -127,7 +135,10 @@ const FormPreviewPageContainer = () => {
   return (
     <div className={`${styles.page} ${styles.pageWide}`}>
       <div className={styles.previewHeader}>
-        <h1 className={styles.title}>Form Preview</h1>
+        <div className={styles.titleGroup}>
+          <h1 className={styles.title}>Form Preview</h1>
+          <p className={styles.pageDescription}>{PAGE_DESCRIPTION}</p>
+        </div>
         {!submittedData && (
           <button
             type="button"
