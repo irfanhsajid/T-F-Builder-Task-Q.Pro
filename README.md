@@ -1,88 +1,103 @@
-# React Assessment — Todo List & Dynamic Form Builder
+# Todo List & Dynamic Form Builder
 
-A clean, modular React application demonstrating best practices in architecture, state management, and component design.
+A production-style React + TypeScript application focused on clean architecture, reusable UI patterns, and maintainable frontend engineering practices.
 
-## 🚀 Setup
+## Live URLs
+
+- Live Demo: [https://qpro-task.vercel.app/](https://qpro-task.vercel.app/)
+- Local Development: [http://localhost:8080](http://localhost:8080)
+
+## Quick Start
 
 ```bash
 npm install
 npm run dev
 ```
 
-## 🏗 Architecture
+Vite is configured to run on port `8080`.
 
-Feature-based folder structure following separation of concerns:
+## Project Structure
 
-```
+This project follows a feature-first approach inside `components`, with clear separation between shared and feature-specific UI.
+
+```text
 src/
-├── features/
-│   ├── todos/                  # Todo List feature
-│   │   ├── components/         # Presentational components (TodoTable, TodoFilters, TodoPagination)
-│   │   ├── hooks/              # Custom hooks (useTodos, useUsers, useTodoFilters, useFilteredTodos)
-│   │   ├── types.ts            # TypeScript interfaces
-│   │   ├── TodoListContainer.tsx   # Container component
-│   │   └── index.ts            # Public API
-│   └── form-builder/           # Form Builder feature
-│       ├── components/         # Presentational (FieldEditor, FormFieldRenderer)
-│       ├── hooks/              # Custom hooks (useFormBuilder)
-│       ├── utils/              # Storage helpers
-│       ├── types.ts            # TypeScript interfaces
-│       ├── FormBuilderContainer.tsx
-│       ├── FormPreviewContainer.tsx
-│       └── index.ts
-├── services/                   # API service layer (centralized fetch calls)
-├── routes/                     # Centralized routing configuration
-├── components/                 # Shared layout & UI components (shadcn/ui)
-└── pages/                      # Standalone pages (NotFound)
+├── components/
+│   ├── features/
+│   │   ├── todos/
+│   │   │   ├── TodoFilters.tsx
+│   │   │   ├── TodoPagination.tsx
+│   │   │   ├── TodoTable.tsx
+│   │   │   ├── TodoTableSkeleton.tsx
+│   │   │   └── index.ts
+│   │   └── form-builder/
+│   │       ├── FieldEditor.tsx
+│   │       ├── FormFieldRenderer.tsx
+│   │       ├── FormSubmitResult.tsx
+│   │       └── index.ts
+│   ├── shared/                 # App shell, layout, nav
+│   └── ui/                     # Reusable primitives (e.g. CustomSelect)
+├── hooks/                      # Reusable business/state hooks
+├── pages/                      # Page-level container components
+├── services/                   # API layer
+├── routes/                     # Centralized route config
+├── styles/                     # CSS Modules (scoped styling)
+└── types/                      # Shared TypeScript contracts
 ```
 
-### Key Patterns
+## Best Practices Applied Across the Codebase
 
-- **Container / Presentational**: Containers manage data and state; presentational components are pure UI.
-- **Custom Hooks**: All business logic extracted into reusable hooks (`useTodos`, `useFormBuilder`, `useTodoFilters`).
-- **API Service Layer**: No direct `fetch` calls in components — all API logic lives in `src/services/api.ts`.
-- **Barrel Exports**: Each feature exposes a clean public API via `index.ts`.
+- **Container + Presentational Pattern**: Page/container components (`src/pages`) orchestrate data and state, while feature components in `src/components/features` focus on rendering and UI interaction.
+- **Feature Separation**: Todos and Form Builder are organized into two dedicated feature folders for scalability and easier maintenance.
+- **Custom Hooks for Business Logic**: Data fetching and local persistence logic are extracted into hooks like `useTodos`, `useUsers`, `useTodoFilters`, and `useFormBuilder`.
+- **Centralized API Service**: External requests are isolated in `src/services/api.ts`; components never call `fetch` directly.
+- **Page-level Dynamic Metadata**: Each page sets its own `title` and meta `description` through `usePageMetadata`, improving SEO and UX clarity.
+- **Custom Select Component**: `CustomSelect` replaces native `<select>` to overcome styling and interaction limitations, while supporting accessibility, keyboard navigation, grouping, and custom placement.
+- **Scoped Styling with CSS Modules**: Styling is modular and component-oriented (`Todo.module.css`, `FormBuilder.module.css`, `CustomSelect.module.css`), minimizing style leakage.
+- **Type Safety**: Shared type definitions in `src/types` are used across features to enforce predictable contracts.
+- **Barrel Exports**: Feature entry points (`index.ts`) provide clean import surfaces.
+- **File Size Discipline**: Components are kept intentionally manageable (generally around 200-300 lines max where practical) to preserve readability and reduce complexity.
 
-## 🔄 State Management
+## How the Application Works
 
-| State Type | Solution | Example |
+### 1) Todo List (`/todos`)
+
+- Fetches todos and users from JSONPlaceholder using TanStack Query.
+- Uses server-side filtering and pagination parameters (`_page`, `_limit`, `userId`, `completed`, `q`) through the API layer.
+- Supports status/user/search filters and preserves filter state in `localStorage`.
+- Implements server-side pagination with row-size control (`10`, `20`, `50`, `all`).
+- Pagination control dynamically determines how many rows are shown per page.
+- Includes skeleton loading, background fetching UX, and resilient error states.
+
+### 2) Form Builder (`/form-builder`)
+
+- Lets users build a form schema dynamically (add/remove fields, update type, set required).
+- Supports multiple field types including text, number, email, tel, textarea, select, radio, checkbox, date, and range.
+- Field type logic is modular, including option-based inputs where needed.
+- Saves schema to `localStorage` so it can be reused by preview.
+
+### 3) Form Preview (`/form-preview`)
+
+- Loads saved form schema and renders inputs dynamically.
+- Applies required validation and type-aware checks (e.g., email and phone validation).
+- Shows clear validation errors and structured submit output.
+- Preserves a simple user flow back to builder for iteration.
+
+## State Management Strategy
+
+| State Concern | Approach | Location |
 |---|---|---|
-| Server state | TanStack Query (`useQuery`) | Todos, Users |
-| Persistent UI state | `localStorage` | Todo filters, Form config |
-| Ephemeral UI state | `useState` | Form field values |
+| Server state | TanStack Query | `useTodos`, `useUsers` |
+| Persistent UI state | `localStorage` | `useTodoFilters`, form config utilities |
+| Local UI state | React state/hooks | Page and feature components |
 
-No global state library needed — each concern is handled by the appropriate tool.
+This keeps each type of state in the right layer without introducing unnecessary global state libraries.
 
-## 💾 Persistence
+## Tech Stack
 
-- **Todo Filters**: Saved to `localStorage` on every change. Restored when navigating back to `/todos`.
-- **Form Builder Config**: Saved as structured JSON in `localStorage`. Loaded by both the builder and preview pages.
-
-## ✨ Features
-
-### Todo List (`/todos`)
-- Fetches todos and users from JSONPlaceholder API via TanStack Query
-- Filters by user, status (completed/pending), and text search
-- Client-side pagination (10 per page)
-- Maps `userId` to user names
-- Loading spinner, error state, and empty state
-
-### Form Builder (`/form-builder`)
-- Dynamically add/remove fields with label, type, required flag
-- Supports: text, number, email, textarea, select, radio, checkbox, date
-- Options editor for select/radio fields
-- Saves configuration to localStorage
-
-### Form Preview (`/form-preview`)
-- Dynamically renders form from saved config
-- Validates required fields
-- Submit button disabled until form is valid
-- Logs collected data to console on submit
-
-## 🛠 Tech Stack
-
-- React 18 + TypeScript
-- Vite 5
-- Tailwind CSS v3 + shadcn/ui
-- TanStack Query v5
-- React Router v6
+- React + TypeScript
+- Vite
+- TanStack Query
+- React Router
+- Lucide Icons
+- CSS Modules
