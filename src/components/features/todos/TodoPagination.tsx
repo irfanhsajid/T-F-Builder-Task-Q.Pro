@@ -3,7 +3,7 @@ import type { TodoPageSize } from "@/types/todos";
 import styles from "@/styles/Todo.module.css";
 import CustomSelect from "@/components/ui/CustomSelect";
 
-const FIRST_LAST_WINDOW = 9;
+const FIRST_LAST_WINDOW = 4;
 
 type PageItem = number | "ellipsis";
 

@@ -37,6 +37,20 @@ const AppLayout = () => {
       <main className={layout.main}>
         <Outlet />
       </main>
+      <footer className={layout.footer}>
+        <span className={layout.footerText}>
+          © {new Date().getFullYear()}{" "}
+          <a
+            className={layout.footerLink}
+            href="https://irfanhsajid.vercel.app"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Irfan H Sajid
+          </a>
+          &nbsp;|&nbsp;All rights reserved
+        </span>
+      </footer>
     </div>
   );
 };
