@@ -13,8 +13,9 @@ const AppLayout = () => {
     <div className={layout.shell}>
       <nav className={layout.nav}>
         <div className={layout.navInner}>
-          <Link to="/todos">
-            <span className={layout.brand}>QPro - Assessment</span>
+          <Link to="/todos" className={layout.brandContainer}>
+            <img src="/favicon.svg" alt="QPro" className={layout.brandImage} />
+            <span className={layout.brand}>QPro - Builder</span>
           </Link>
           <div className={layout.navLinks}>
             {navItems.map(({ to, label, icon: Icon }) => (
