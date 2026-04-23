@@ -21,6 +21,7 @@ const TodoListPageContainer = () => {
   });
 
   const { filters, setFilters, resetFilters } = useTodoFilters();
+
   const {
     todos,
     totalCount,
@@ -28,6 +29,7 @@ const TodoListPageContainer = () => {
     isFetching: todosFetching,
     isError: todosError,
   } = useTodos(filters);
+
   const {
     users,
     userMap,
@@ -37,6 +39,7 @@ const TodoListPageContainer = () => {
 
   const totalPages = useMemo(() => {
     if (filters.pageSize === "all") return 1;
+
     return Math.max(1, Math.ceil(totalCount / filters.pageSize));
   }, [totalCount, filters.pageSize]);
 
